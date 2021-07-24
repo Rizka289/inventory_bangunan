@@ -77,8 +77,7 @@ class CI_Controller
 	public function __construct()
 	{
 		self::$instance = &$this;
-		$myOs = $this->myOS();
-		$isWindows = substr($myOs, 0, 7) == "Windows";
+		$isWindows = DIRECTORY_SEPARATOR == "\\";
 		if ($isWindows) {
 			if (!defined("ASSETS_PATH"))
 				define("ASSETS_PATH", str_replace("application\\", 'public\\assets\\', APPPATH));

@@ -258,7 +258,7 @@ if (!method_exists($this, 'get_path')) {
     function get_path($type = 'assets', $suffix = null)
     {
         $ci = get_instance();
-        $isWindows = $isWindows = substr($ci->myOS(), 0, 7) == "Windows";
+        $isWindows = DIRECTORY_SEPARATOR == "\\";
 
         $map = [
             'assets' => ASSETS_PATH,
@@ -268,13 +268,13 @@ if (!method_exists($this, 'get_path')) {
         ];
 
         $path = $map[$type] . $suffix;
-        if ($isWindows)
-            $path = str_replace($path, '/', '\\');
 
+        if ($isWindows)
+            $path = str_replace('/', '\\', $path);
         return $path;
     }
 
-
+}
 if (!method_exists($this, 'is_login')) {
     function is_login($role = null, $user = null)
     {
@@ -320,9 +320,7 @@ if (!method_exists($this, 'is_login')) {
 if (!method_exists($this, 'isWindows')) {
     function isWindows()
     {
-        $ci = get_instance();
-
-        return substr($ci->myOS(), 0, 7) == 'Windows';
+        return DIRECTORY_SEPARATOR == "\\";
     }
 }
 
