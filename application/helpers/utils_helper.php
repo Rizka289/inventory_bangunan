@@ -11,6 +11,8 @@ if (!method_exists($this, 'sessiondata')) {
         $CI = &get_instance();
 
         $data = $CI->session->userdata($index);
+        if(!empty($kolom) && !isset($data[$kolom]))
+            return null;
 
         return empty($kolom) ? $data : $data[$kolom];
     }
@@ -88,6 +90,7 @@ if (!method_exists($this, 'utils_config_item')) {
     {
 
         $index = '';
+        // var_dump($params);die;
         if (!empty($params)) {
             if (is_array($params)) {
                 foreach ($params as $value)
@@ -116,7 +119,7 @@ if (!method_exists($this, 'config_sidebar')) {
         if (is_null($sidebar))
             return utils_config_item('component');
 
-        $config = utils_config_item('component', array('component', 'sidebar', 'dore', $sidebar));
+        $config = utils_config_item('component', array('component', 'dore', 'sidebar', $sidebar));
 
         $config['menus'][$activeMenu]['active'] = true;
         $induk = $config['menus'][$activeMenu]['link'];
@@ -286,33 +289,31 @@ if (!method_exists($this, 'is_login')) {
         $ci = get_instance();
 
         if (!empty($userdata) && SYNC_DATAUSER) {
-            $ci->db->select('users.username, anggota.*');
-            $ci->db->where('username', $userdata['username']);
+            $ci->db->select('*');
+            $ci->db->where('user_name', $userdata['user_name']);
             $ci->db->from('users');
-            $ci->db->join('anggota', 'users.anggota = anggota.id');
-            $u = $ci->db->results();
+            $u = $ci->db->results();    
 
             if (count($u) > 1 || empty($u))
                 return false;
-            else
+            else{
+                unset($u['user_password']);
                 $ci->session->set_userdata('login', $u[0]);
+            }
+                
 
             $userdata = sessiondata('login');
         }
 
         if (empty($role) && empty($user)) {
             return !empty($userdata);
+
         } elseif (!empty($userdata) && !empty($role) && empty($user)) {
-            if ($role == 'bendahara')
-                return $userdata['role'] == 'bendahara 1' || $userdata['role'] == 'bendahara 2';
-            elseif ($role == 'admin')
-                return $userdata['role'] == 'ketua yayasan' || $userdata['role'] == 'kepala sekolah';
-            elseif ($role != 'bendahara')
-                return $userdata['role'] == $role;
+            return $userdata['user_role'] == $role;
         } elseif (!empty($userdata) && empty($role) && !empty($user)) {
-            return $userdata['username'] == $user;
+            return $userdata['user_name'] == $user;
         } elseif (!empty($userdata) && !empty($role) && !empty($user)) {
-            return $userdata['username'] == $user && $userdata['role'] == $role;
+            return $userdata['user_name'] == $user && $userdata['user_role'] == $role;
         }
     }
 }

@@ -16,8 +16,8 @@ $(document).ready(function(){
         submitSuccess: function(){
             endLoading();
             setTimeout(function(){
-                location.href = path + 'admin/dashboard';
-            }, 50)
+                location.href = path + 'dashboard';
+            }, 1000)
         }
     }
     $("#" + formid).initFormAjax(options)

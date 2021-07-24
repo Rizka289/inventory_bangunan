@@ -21,10 +21,9 @@ $config['themes']['main']['css'] = array(
 
 // ICON ONLY
 $config['themes']['icons']['css'] = array(
-    array('pos' => 'head', 'src' => get_path('assets', 'vendor/bootstrap/css/bootstrap.min.css')),
-    array('pos' => 'head', 'src' => get_path('assets', 'vendor/fontawesome/css/all.min.css')),
-    array('pos' => 'head', 'src' => get_path('assets', 'vendor/dore/icon/iconsmind/style.css') ),
-    array('pos' => 'head', 'src' => get_path('assets', 'vendor/dore/icon/simple-line-icons/css/simple-line-icons.css'))
+    array('pos' => 'head', 'src' => base_url('public/assets/vendor/fontawesome/css/all.min.css')),
+    array('pos' => 'head', 'src' => base_url('public/assets/vendor/dore/icon/iconsmind/style.css') ),
+    array('pos' => 'head', 'src' => base_url('public/assets/vendor/dore/icon/simple-line-icons/css/simple-line-icons.css'))
 );
 
 // Dore themes

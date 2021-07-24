@@ -98,9 +98,9 @@ class Auth
         if (empty($user)) {
             response(['message' => 'User ' . $input['user'] . ' Tidak ditemukan', 'type' => 'error'], 400);
         } else {
-            if (password_verify($input['pass'], $user['password'])) {
+            if (password_verify($input['password'], $user['user_password'])) {
                 // setciobject($user);
-                unset($user['password']);
+                unset($user['user_password']);
                 $user['session_dibuat'] = time();
 
                 $ci->session->set_userdata(['login' => $user]);
