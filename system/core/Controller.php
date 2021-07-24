@@ -88,6 +88,9 @@ class CI_Controller
 
 			if (!defined("VIEWS_PATH"))
 				define("VIEWS_PATH", APPPATH . 'views\\');
+
+			if (!defined("STATIC_PATH"))
+				define("STATIC_PATH", str_replace("application\\", 'public\\', APPPATH));
 		} else {
 			if (!defined("ASSETS_PATH"))
 				define("ASSETS_PATH", str_replace("application/", 'public/assets/', APPPATH));
@@ -97,6 +100,8 @@ class CI_Controller
 
 			if (!defined("VIEWS_PATH"))
 				define("VIEWS_PATH", APPPATH . 'views/');
+			if (!defined("STATIC_PATH"))
+				define("STATIC_PATH", str_replace("application/", 'public/', APPPATH));
 		}
 		// Assign all the class objects that were instantiated by the
 		// bootstrap file (CodeIgniter.php) to local class variables
@@ -134,20 +139,20 @@ class CI_Controller
 			$this->views[] = $views;
 
 		if (!is_array($params))
-			$this->CI->setParams($params, 'params');
+			$this->setParams($params, 'params');
 		else {
 			foreach ($params as $k => $v) {
-				$this->CI->setParams($v, $k);
+				$this->setParams($v, $k);
 			}
 		}
 	}
 	function add_javascript($js)
 	{
 		if (isset($js['pos'])) {
-			$this->CI->setParams($js, 'extra_js', true);
+			$this->setParams($js, 'extra_js', true);
 		} else {
 			foreach ($js as $j) {
-				$this->CI->setParams($j, 'extra_js', true);
+				$this->setParams($j, 'extra_js', true);
 			}
 		}
 	}
@@ -160,14 +165,14 @@ class CI_Controller
 				if (!empty($data))
 					extract($data);
 
-				include_once ASSETS_PATH . 'js/' . $js . '.js';
+				include_once get_path('assets',  'js/' . $js . '.js');
 			}
 			$params = array(
 				'script' => $type == 'file' ? ob_get_contents() : $js,
 				'type' => 'inline',
 				'pos' => 'body:end'
 			);
-			$this->CI->setParams($params, 'extra_js', true);
+			$this->setParams($params, 'extra_js', true);
 			if ($type == 'file')
 				ob_end_clean();
 		} catch (\Throwable $th) {
@@ -192,17 +197,17 @@ class CI_Controller
 			'type' => 'inline',
 			'pos' => $pos
 		);
-		$this->CI->setParams($params, 'extra_css', true);
+		$this->setParams($params, 'extra_css', true);
 		if ($type == 'file')
 			ob_end_clean();
 	}
 	function add_stylesheet($css)
 	{
 		if (isset($css['pos'])) {
-			$this->CI->setParams($css, 'extra_css', true);
+			$this->setParams($css, 'extra_css', true);
 		} else {
 			foreach ($css as $c) {
-				$this->CI->setParams($c, 'extra_css', true);
+				$this->setParams($c, 'extra_css', true);
 			}
 		}
 	}

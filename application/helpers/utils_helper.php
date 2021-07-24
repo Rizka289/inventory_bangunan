@@ -149,7 +149,7 @@ if (!method_exists($this, 'add_resource_group')) {
 
 
         $resourceText = '';
-        $configitem = config_item('theme');
+        $configitem = utils_config_item('themes');
         $configitem = $configitem['themes'];
 
         if ($type == 'semua') {
@@ -199,7 +199,7 @@ if (!method_exists($this, 'include_view')) {
         if (is_array($data))
             extract($data);
         // var_dump(APP_PATH . 'views/' . $path . '.php');die;
-        include VIEWS_PATH . $path . '.php';
+        include get_path('views', $path) . '.php';
     }
 }
 
@@ -254,22 +254,103 @@ if (!method_exists($this, 'search_part_bool')) {
     }
 }
 
-if(!method_exists($this, 'get_path')){
-    function get_path($type = 'assets', $suffix = null){
+if (!method_exists($this, 'get_path')) {
+    function get_path($type = 'assets', $suffix = null)
+    {
         $ci = get_instance();
         $isWindows = $isWindows = substr($ci->myOS(), 0, 7) == "Windows";
 
         $map = [
             'assets' => ASSETS_PATH,
-            'config' => CONFIG_PATH, 
+            'config' => CONFIG_PATH,
             'views' => VIEWS_PATH,
+            'static' => STATIC_PATH
         ];
 
 
-        if($isWindows && !empty($suffix))
+        if ($isWindows && !empty($suffix))
             $suffix = str_replace($suffix, '/', '\\');
 
         return $map[$type] . $suffix;
+    }
+}
 
+
+if (!method_exists($this, 'is_login')) {
+    function is_login($role = null, $user = null)
+    {
+
+        $userdata = sessiondata('login'); //sessiondata('login')
+        /**
+         * @var CI_Controller $ci;
+         */
+        $ci = get_instance();
+
+        if (!empty($userdata) && SYNC_DATAUSER) {
+            $ci->db->select('users.username, anggota.*');
+            $ci->db->where('username', $userdata['username']);
+            $ci->db->from('users');
+            $ci->db->join('anggota', 'users.anggota = anggota.id');
+            $u = $ci->db->results();
+
+            if (count($u) > 1 || empty($u))
+                return false;
+            else
+                $ci->session->set_userdata('login', $u[0]);
+
+            $userdata = sessiondata('login');
+        }
+
+        if (empty($role) && empty($user)) {
+            return !empty($userdata);
+        } elseif (!empty($userdata) && !empty($role) && empty($user)) {
+            if ($role == 'bendahara')
+                return $userdata['role'] == 'bendahara 1' || $userdata['role'] == 'bendahara 2';
+            elseif ($role == 'admin')
+                return $userdata['role'] == 'ketua yayasan' || $userdata['role'] == 'kepala sekolah';
+            elseif ($role != 'bendahara')
+                return $userdata['role'] == $role;
+        } elseif (!empty($userdata) && empty($role) && !empty($user)) {
+            return $userdata['username'] == $user;
+        } elseif (!empty($userdata) && !empty($role) && !empty($user)) {
+            return $userdata['username'] == $user && $userdata['role'] == $role;
+        }
+    }
+}
+
+if (!method_exists($this, 'isWindows')) {
+    function isWindows()
+    {
+        $ci = get_instance();
+
+        return substr($ci->myOS(), 0, 7) == 'Windows';
+    }
+}
+
+if (!method_exists($this, 'fieldmapping')) {
+    function fieldmapping($input, $conf, $defaultValue = array(), $petaNilai = array())
+    {
+        $config = utils_config_item('forms', array('field_mapping', $conf));
+        $field = array();
+        $adaDefault = count($defaultValue) > 0;
+        $adaPeta = count($petaNilai) > 0;
+        if (empty($config))
+            response(['message' => 'Config form ' . $config . ' Kosong'], 404);
+
+        foreach ($config as $k => $v) {
+            if (isset($input[$k]))
+                $field[$v] = $input[$k];
+            elseif (!isset($input[$k]) && $adaDefault && in_array($k, array_keys($defaultValue)))
+                $field[$v] = $defaultValue[$k];
+        }
+        if ($adaPeta) {
+            foreach ($petaNilai as $f => $peta) {
+                foreach ($peta as $k => $v) {
+                    if ($field[$f] == $k)
+                        $field[$f] = $v;
+                }
+            }
+        }
+        return $field;
     }
 }

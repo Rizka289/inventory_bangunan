@@ -85,3 +85,6 @@ defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automat
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 define('MYSQL_TIMESTAMP_FORMAT', 'Y-m-d H:i:s');
 define('MYSQL_DATE_FORMAT', 'Y-m-d');
+define("VENDOR_PATH", "https://cdn.kamscodelab.tech/");
+define("APP_NAME", "INVENTORY BANGUNAN");
+define("SYNC_DATAUSER", false);
