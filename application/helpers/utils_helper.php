@@ -267,13 +267,12 @@ if (!method_exists($this, 'get_path')) {
             'static' => STATIC_PATH
         ];
 
+        $path = $map[$type] . $suffix;
+        if ($isWindows)
+            $path = str_replace($path, '/', '\\');
 
-        if ($isWindows && !empty($suffix))
-            $suffix = str_replace($suffix, '/', '\\');
-
-        return $map[$type] . $suffix;
+        return $path;
     }
-}
 
 
 if (!method_exists($this, 'is_login')) {
