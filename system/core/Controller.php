@@ -1,4 +1,5 @@
 <?php
+
 /**
  * CodeIgniter
  *
@@ -35,7 +36,7 @@
  * @since	Version 1.0.0
  * @filesource
  */
-defined('BASEPATH') OR exit('No direct script access allowed');
+defined('BASEPATH') or exit('No direct script access allowed');
 
 /**
  * Application Controller Class
@@ -49,7 +50,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  * @author		EllisLab Dev Team
  * @link		https://codeigniter.com/user_guide/general/controllers.html
  */
-class CI_Controller {
+class CI_Controller
+{
 
 	/**
 	 * Reference to the CI singleton
@@ -70,19 +72,45 @@ class CI_Controller {
 	 *
 	 * @return	void
 	 */
+	private $views = [];
+	private $params = [];
 	public function __construct()
 	{
-		self::$instance =& $this;
+		self::$instance = &$this;
+		$myOs = $this->myOS();
+		$isWindows = substr($myOs, 0, 7) == "Windows";
+		if ($isWindows) {
+			if (!defined("ASSETS_PATH"))
+				define("ASSETS_PATH", str_replace("application\\", 'public\\assets\\', APPPATH));
 
+			if (!defined("CONFIG_PATH"))
+				define("CONFIG_PATH", APPPATH . 'config\\');
+
+			if (!defined("VIEWS_PATH"))
+				define("VIEWS_PATH", APPPATH . 'views\\');
+
+			if (!defined("STATIC_PATH"))
+				define("STATIC_PATH", str_replace("application\\", 'public\\', APPPATH));
+		} else {
+			if (!defined("ASSETS_PATH"))
+				define("ASSETS_PATH", str_replace("application/", 'public/assets/', APPPATH));
+
+			if (!defined("CONFIG_PATH"))
+				define("CONFIG_PATH", APPPATH . 'config/');
+
+			if (!defined("VIEWS_PATH"))
+				define("VIEWS_PATH", APPPATH . 'views/');
+			if (!defined("STATIC_PATH"))
+				define("STATIC_PATH", str_replace("application/", 'public/', APPPATH));
+		}
 		// Assign all the class objects that were instantiated by the
 		// bootstrap file (CodeIgniter.php) to local class variables
 		// so that CI can run as one big super object.
-		foreach (is_loaded() as $var => $class)
-		{
-			$this->$var =& load_class($class);
+		foreach (is_loaded() as $var => $class) {
+			$this->$var = &load_class($class);
 		}
 
-		$this->load =& load_class('Loader', 'core');
+		$this->load = &load_class('Loader', 'core');
 		$this->load->initialize();
 		log_message('info', 'Controller Class Initialized');
 	}
@@ -99,5 +127,144 @@ class CI_Controller {
 	{
 		return self::$instance;
 	}
+	public function addViews($views, $params = null)
+	{
+		/**
+		 * @var CI_Controller
+		 */
+		if (is_array($views)) {
+			foreach ($views as $v)
+				$this->views[] = $v;
+		} else
+			$this->views[] = $views;
 
+		if (!is_array($params))
+			$this->setParams($params, 'params');
+		else {
+			foreach ($params as $k => $v) {
+				$this->setParams($v, $k);
+			}
+		}
+	}
+	function add_javascript($js)
+	{
+		if (isset($js['pos'])) {
+			$this->setParams($js, 'extra_js', true);
+		} else {
+			foreach ($js as $j) {
+				$this->setParams($j, 'extra_js', true);
+			}
+		}
+	}
+
+	function add_cachedJavascript($js, $type = 'file', $pos = "body:end", $data = array())
+	{
+		try {
+			if ($type == 'file') {
+				ob_start();
+				if (!empty($data))
+					extract($data);
+
+				include_once get_path('assets',  'js/' . $js . '.js');
+			}
+			$params = array(
+				'script' => $type == 'file' ? ob_get_contents() : $js,
+				'type' => 'inline',
+				'pos' => 'body:end'
+			);
+			$this->setParams($params, 'extra_js', true);
+			if ($type == 'file')
+				ob_end_clean();
+		} catch (\Throwable $th) {
+			print_r($th);
+		}
+	}
+	function add_cachedStylesheet($css, $type = 'file', $pos = 'head', $data = array())
+	{
+		if ($type == 'file') {
+			ob_start();
+			if (!empty($data))
+				extract($data);
+			try {
+				include_once ASSETS_PATH . 'css/' . $css . '.css';
+			} catch (\Throwable $th) {
+				print_r($th);
+			}
+		}
+
+		$params = array(
+			'style' => $type == 'file' ? ob_get_contents() : $css,
+			'type' => 'inline',
+			'pos' => $pos
+		);
+		$this->setParams($params, 'extra_css', true);
+		if ($type == 'file')
+			ob_end_clean();
+	}
+	function add_stylesheet($css)
+	{
+		if (isset($css['pos'])) {
+			$this->setParams($css, 'extra_css', true);
+		} else {
+			foreach ($css as $c) {
+				$this->setParams($c, 'extra_css', true);
+			}
+		}
+	}
+	function myOS()
+	{
+		$user_agent     =   $_SERVER['HTTP_USER_AGENT'];
+		$os_platform    =   "Unknown OS Platform";
+		$os_array       =   array(
+			'/windows nt 6.2/i'     =>  'Windows 8',
+			'/windows nt 6.1/i'     =>  'Windows 7',
+			'/windows nt 6.0/i'     =>  'Windows Vista',
+			'/windows nt 5.2/i'     =>  'Windows Server 2003/XP x64',
+			'/windows nt 5.1/i'     =>  'Windows XP',
+			'/windows xp/i'         =>  'Windows XP',
+			'/windows nt 5.0/i'     =>  'Windows 2000',
+			'/windows me/i'         =>  'Windows ME',
+			'/win98/i'              =>  'Windows 98',
+			'/win95/i'              =>  'Windows 95',
+			'/win16/i'              =>  'Windows 3.11',
+			'/macintosh|mac os x/i' =>  'Mac OS X',
+			'/mac_powerpc/i'        =>  'Mac OS 9',
+			'/linux/i'              =>  'Linux',
+			'/ubuntu/i'             =>  'Ubuntu',
+			'/iphone/i'             =>  'iPhone',
+			'/ipod/i'               =>  'iPod',
+			'/ipad/i'               =>  'iPad',
+			'/android/i'            =>  'Android',
+			'/blackberry/i'         =>  'BlackBerry',
+			'/webos/i'              =>  'Mobile'
+		);
+
+		foreach ($os_array as $regex => $value) {
+
+			if (preg_match($regex, $user_agent)) {
+				$os_platform    =   $value;
+			}
+		}
+
+		return $os_platform;
+	}
+	function setView($views)
+	{
+		$this->views[] = $views;
+	}
+	function setParams($params, $key, $arrayOfArray = false)
+	{
+		if ($arrayOfArray)
+			$this->params[$key][] = $params;
+		else
+			$this->params[$key] = $params;
+	}
+	public function render()
+	{
+		foreach ($this->views as $view) {
+			$this->load->view($view, $this->params);
+		}
+		$this->views = [];
+		$this->params = [];
+	}
 }
