@@ -294,7 +294,6 @@ async function persiapan_data() {
                         $("#pros-loading").show();
                        
                         var ids = data.map(d => d[0]);
-                        console.log("IDS", ids);
                         
                         $.post(path + url_delete_data, {
                             ids: ids
@@ -310,7 +309,6 @@ async function persiapan_data() {
                             var toastOpt = config.data.toasCofig;
                             res = res.responseJSON
                             toastOpt.message = res.message;
-                            console.log(res);
 
                             makeToast(toastOpt);
                             config.data.loadData();
