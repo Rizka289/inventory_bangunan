@@ -57,9 +57,9 @@
     </script>
 </head>
 
-<body id="app-container" class="<?php echo 'menu-default' ?>">
+<body id="app-container" class="<?php echo 'menu-sub-hidden' ?>">
     <?php if (isset($loadingAnim) && $loadingAnim) : ?>
-        <div class="c-overlay">
+        <div id="pros-loading" class="c-overlay">
             <div class="c-overlay-text">Loading</div>
         </div>
     <?php endif ?>

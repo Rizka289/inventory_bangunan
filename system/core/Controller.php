@@ -90,6 +90,8 @@ class CI_Controller
 
 			if (!defined("STATIC_PATH"))
 				define("STATIC_PATH", str_replace("application\\", 'public\\', APPPATH));
+			if (!defined("THIRD_PARTY"))
+				define("THIRD_PARTY",  APPPATH . "third_party\\");
 		} else {
 			if (!defined("ASSETS_PATH"))
 				define("ASSETS_PATH", str_replace("application/", 'public/assets/', APPPATH));
@@ -101,6 +103,8 @@ class CI_Controller
 				define("VIEWS_PATH", APPPATH . 'views/');
 			if (!defined("STATIC_PATH"))
 				define("STATIC_PATH", str_replace("application/", 'public/', APPPATH));
+			if (!defined("THIRD_PARTY"))
+				define("THIRD_PARTY",  APPPATH . "third_party/");
 		}
 		// Assign all the class objects that were instantiated by the
 		// bootstrap file (CodeIgniter.php) to local class variables
@@ -163,14 +167,17 @@ class CI_Controller
 				ob_start();
 				if (!empty($data))
 					extract($data);
-
-				include_once get_path('assets',  'js/' . $js . '.js');
+				if(file_exists(get_path('assets',  'js/' . $js . '.js')))
+					include_once get_path('assets',  'js/' . $js . '.js');
 			}
+			
 			$params = array(
 				'script' => $type == 'file' ? ob_get_contents() : $js,
 				'type' => 'inline',
 				'pos' => 'body:end'
 			);
+			if(!file_exists(get_path('assets',  'js/' . $js . '.js')))
+				$params['script'] = '';
 			$this->setParams($params, 'extra_js', true);
 			if ($type == 'file')
 				ob_end_clean();

@@ -27,7 +27,7 @@ if (!isset($data_content))
                     </li>
                 </ol>
             </nav>
-            <?php if(isset($subPageName)):?>
+            <?php if(isset($pageName)):?>
                 <div class="separator mb-5"></div>
             <?php endif ?>
         </div>

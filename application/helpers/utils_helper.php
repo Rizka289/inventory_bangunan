@@ -267,7 +267,8 @@ if (!method_exists($this, 'get_path')) {
             'assets' => ASSETS_PATH,
             'config' => CONFIG_PATH,
             'views' => VIEWS_PATH,
-            'static' => STATIC_PATH
+            'static' => STATIC_PATH,
+            'third' => THIRD_PARTY,
         ];
 
         $path = $map[$type] . $suffix;

@@ -7,6 +7,7 @@ $config['component']['dore']['sidebar'] = array(
             array('text' => 'Dashboard', 'icon' => 'iconsmind-Home', 'link' => base_url('dashboard')),
             array('text' => 'Catat Transaksi', 'link' =>  '#transaksi', 'icon' => 'iconsmind-File-Edit'),
             array('text' => 'Laporan', 'link' => '#laporan', 'icon' => 'iconsmind-Bar-Chart'),
+            array('text' => 'Utilitas', 'link' => '#util', 'icon' => 'simple-icon-equalizer'),
         ),
         'subMenus' => array(
             array(
@@ -23,7 +24,15 @@ $config['component']['dore']['sidebar'] = array(
                     array('text' => 'Pembayaran SPP', 'link' => base_url('laporan/spp')),
                     array('text' => 'Grafik', 'link' => base_url('laporan/grafik')),
                 )
-            )
+            ),
+            array(
+                'induk' => 'util', 
+                'menus' => array(
+                    array('text' => 'User Management', 'link' => base_url('users'), 'icon' => 'simple-icon-people'),
+                    array('text' => 'Kelola Satuan', 'link' => base_url('satuan'), 'icon' => 'iconsmind-Tag'),
+
+                )
+            ),
 
         )
     ),

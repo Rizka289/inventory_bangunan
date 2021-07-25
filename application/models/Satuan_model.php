@@ -9,5 +9,34 @@ class Satuan_model extends CI_Model
         $query = $this->db->get('uom');
         return $query->result();
     }
+
+    function add(){
+        try {
+            $this->db->insert('uom', ['uom' => $_POST['satuan']]);
+        } catch (\Throwable $th) {
+            return false;
+        }
+        return true;
+
+    }
+
+    function delete($ids){
+        try {
+            $this->db->where_in('id_uom', $ids)->delete('uom');
+        } catch (\Throwable $th) {
+            return false;
+        }
+        return true;
+    }       
+
+    function update($data){
+        try {
+            $this->db->where('id_uom', $data['id'])
+                ->update('uom', ['uom' => $data['satuan']]);
+        } catch (\Throwable $th) {
+            return false;
+        }
+        return true;
+    }
    
 }

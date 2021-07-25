@@ -25,7 +25,7 @@
             <ul style="margin-top: 10%;" class="list-unstyled" data-link="<?php echo $submenu['induk'] ?>">
                 <?php foreach($submenu['menus'] as $menu): ?>
                 <li class="submenu-item <?php echo isset($menu['active']) ? 'active': null ?>">
-                    <a style="font-size: 17px;" href="<?php echo $menu['link'] ?>">
+                    <a style="<?= isset($menu['icon']) ? 'font-size: 15px;' : 'font-size: 17px;'?>" href="<?php echo $menu['link'] ?>">
                         <i class="<?php echo isset($menu['icon']) ? $menu['icon'] : null ?>"></i><?php echo $menu['text'] ?>
                     </a>
                 </li>

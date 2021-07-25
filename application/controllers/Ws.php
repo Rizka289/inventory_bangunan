@@ -7,4 +7,20 @@ class Ws extends CI_Controller{
         $post = $this->auth->prepare($_POST);
         $this->auth->login($post);
     }
+    function form()
+    {
+        if (httpmethod())
+            response(['message' => 'Ilegal akses'], 403);
+
+        if (!isset($_GET['f']))
+            response(['message' => 'File (form) kosong'], 404);
+        $form = $_GET['f'];
+
+        if (!file_exists(get_path('views', $form . '.php')))
+            response(['message' => 'Form yang ' . $form . ' Tidak ditemukan'], 404);
+        else {
+            $this->addViews($form);
+            $this->render();
+        }
+    }
 }

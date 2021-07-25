@@ -66,3 +66,25 @@ $config['themes']['form']['css'] = array(
 $config['themes']['form']['js'] = array(
     array('pos' => 'head', 'src' => VENDOR_PATH . 'select2/dist/js/select2.min.js'),
 );
+
+
+
+$config['themes']['datatables']['css'] = array(
+    array('src' => VENDOR_PATH . 'datatables/dataTables.bootstrap4.min.css', 'pos' => 'head'),
+    array('src' => VENDOR_PATH . 'datatables/datatables.responsive.bootstrap4.min.css', 'pos' => 'head'),
+    // array('src' => VENDOR_PATH . 'datatables/jquery.dataTables.min.css', 'pos' => 'head'),
+    array('src' => VENDOR_PATH . 'datatables/select.dataTables.css', 'pos' => 'head'),
+);
+
+$config['themes']['datatables']['js'] = array(
+    array('pos' => 'head', 'src' => VENDOR_PATH . 'datatables/datatables.min.js'),
+    array('pos' => 'head', 'src' => VENDOR_PATH . 'datatables/buttons.datatables.js'),
+    array('pos' => 'head', 'src' => VENDOR_PATH . 'datatables/dt.select.js'),
+    array('pos' => 'head', 'src' => VENDOR_PATH . 'datatables/btn.zip.js'),
+    // array('pos' => 'head', 'src' => VENDOR_PATH . 'datatables/btn.pdf.js'),
+    array('pos' => 'head', 'src' => VENDOR_PATH . 'datatables/btn.pfs.js'),
+    array('pos' => 'head', 'src' => VENDOR_PATH . 'datatables/btn.html-buttons.js'),
+    array('pos' => 'head', 'src' => VENDOR_PATH . 'datatables/btn.print.js'),
+    // array('pos' => 'head', 'src' => VENDOR_PATH . 'datatables/jquery.dataTables.min.js'),
+    // array('pos' => 'head', 'src' => VENDOR_PATH . 'datatables/dataTables.select.min.js'),
+);

@@ -610,7 +610,7 @@ uihelper = function () {
             ordering: !opt.order ? false : opt.order,
             dom: !opt.dom ? '<"row view-filter"<"col-sm-12"<"pull-left"l><"pull-right"f><"clearfix">>>t<"row view-pager"<"col-sm-12"<"text-center"ip>>>' : opt.dom,
             buttons: !opt.buttons ? [] : opt.buttons,
-            select: !opt.select ? false : opt.select,
+            select: opt.select == undefined ? false : opt.select,
             responsive: !opt.responsive ? false : opt.responsive,
             pageLength: 6,
             language: {

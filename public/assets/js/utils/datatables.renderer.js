@@ -1,0 +1,342 @@
+$(document).ready(async function () {
+    var data = await persiapan_data();
+    add_eventlistener(data);
+    inisialisasi(data);
+});
+
+async function tambahHandler(data, isEdit = false, defData = null) {
+    var url_tambah_data = "<?php echo $url_tambah_data ?>";
+    var url_update_data = "<?= $url_update_data ?>";
+
+    var form = "<?php echo $form ?>";
+
+    var form = await fetch(path + 'ws/form?f=' + form).then(res => {
+        if (res.status != 200)
+            return;
+        else
+            return res.text()
+    }).then(res => {
+        if (!res)
+            return;
+        else {
+            var opt = {
+                type: 'form',
+                clickToClose: false,
+                kembali: false,
+                destroy: true,
+                open: true,
+                ajax: true,
+                size: 'modal-lg',
+                modalTitle: 'Tambah data',
+                modalPos: 'right',
+                saatBuka: function () {
+                    if (!$('body').hasClass('modal-open'))
+                        $('body').addClass('modal-open');
+                    data.modal_buka(isEdit, defData);
+                },
+                submitSuccess: function (res) {
+                    $('#submit').prop('disabled', false);
+                    $('#modal-' + data.tableid).modal('hide');
+                    endLoading();
+                    var toastOpt = data.toasCofig;
+                    toastOpt.bg = 'bg-success';
+                    toastOpt.title = 'Berhasil';
+                    toastOpt.message = res.message;
+                    makeToast(toastOpt);
+    
+                    data.loadData();
+    
+                    setTimeout(function () {
+                        $('#batal').trigger('click');
+                    }, 2000);
+                },
+                submitError: function (res) {
+                    $('#submit').prop('disabled', false);
+                    $('#modal-' + data.tableid).modal('hide');
+                    endLoading();
+    
+                    res = res.responseJSON
+                    var toastOpt = data.toasCofig;
+    
+                    toastOpt.bg = 'bg-danger';
+                    toastOpt.message = res.message;
+                    toastOpt.title = "Galat";
+                    makeToast(toastOpt);
+
+                    data.loadData();
+    
+                    setTimeout(function () {
+                        $('#batal').trigger('click');
+                    }, 2000);
+                },
+                sebelumSubmit: function () {
+                    $('#submit').prop('disabled', true);
+                    showLoading();
+                },
+                formOpt: {
+                    formId: "form-" + data.tableid,
+                    formAct: isEdit ? path + url_update_data : path + url_tambah_data,
+                    formMethod: 'POST',
+                    formAttr: ''
+                },
+                modalBody: {
+                    input: [
+                        {
+                            type: 'custom', text: res,
+                        },
+                    ],
+                    buttons: [
+                        { type: 'reset', data: 'data-dismiss="modal"', text: 'Batal', id: "batal", class: "btn btn btn-warning" },
+                        { type: 'button', text: 'kembali', id: "kembali", class: "btn btn btn-secondary" },
+                        { type: 'submit', text: 'Simpan', id: "submit", class: "btn btn btn-primary" }
+                    ]
+                },
+            }
+            generateModal('modal-' + data.tableid, 'body', opt)
+        }
+    });
+}
+
+
+async function persiapan_data() {
+    var data = {
+        thumb: {},
+    };
+
+    var tableid = "<?php echo $tableid ?>"
+    var adaCheckbox = <?php echo isset($adaCheckbox) ? $adaCheckbox : 'false' ?>;
+    data.tableid = tableid;
+    var toasCofig = {
+        wrapper: '#' + tableid,
+        id: 'toast-barang',
+        delay: 3000,
+        autohide: true,
+        show: true,
+        bg: 'bg-danger',
+        textColor: 'text-white',
+        time: waktu(null, 'HH:mm'),
+        toastId: 'logout-error',
+        title: 'Gagal, Terjadi kesalahan',
+        type: 'danger',
+        hancurkan: true
+    }
+    data.toasCofig = toasCofig;
+
+    modal_buka = function (isEdit = false, defData = null) {
+        $('#kembali').hide();
+        $('#form-modal-barang').removeAttr('tabindex');
+        $('#penjual').change(function () {
+            if (!$(this).val())
+                $('#tambah-penjual').prop('disabled', false)
+            else
+                $('#tambah-penjual').prop('disabled', true)
+
+        });
+
+        $('#tambah-penjual').click(function () {
+            $('#halaman-2').show();
+            $('#halaman-1').animate({ height: 'toggle' });
+
+            setTimeout(function () {
+                $('#halaman-1').hide();
+            }, 500)
+
+            if ($('#halaman-2').is(':visible'))
+                $('#kembali').show();
+
+            setTimeout(function () {
+                $('body').addClass('modal-open');
+            }, 500);
+        });
+
+        $('#kembali').click(function () {
+            $('#halaman-1').show();
+            $('#halaman-2').animate({ height: 'toggle' });
+
+
+            setTimeout(function () {
+                $('#halaman-2').hide();
+            }, 500)
+
+            if ($('#halaman-1').is(':visible'))
+                $('#kembali').hide();
+
+            setTimeout(function () {
+                $('body').addClass('modal-open');
+            }, 500);
+        });
+        
+        $('.select2').select2({
+            minimumInputLength: 3,
+            ajax: {
+                url: path + 'penjual/select2',
+                dataType: 'json',
+                data: function (params) {
+                    var query = {
+                        search: params.term
+                    }
+                    return query;
+                },
+                processResults: function (data) {
+                    var hasil = [];
+                    data.data.forEach(d => {
+                        hasil.push({ id: d.id, text: d.nama_lengkap + ' - ' + d.alamat.substr(0, 20) + '...' });
+                    });
+                    return {
+                        results: hasil
+                    }
+                }
+            },
+        });
+
+        if(isEdit){
+            var editCallback = <?php echo isset($editCallback) ? $editCallback : "null" ?>;
+            if(editCallback != null)
+                editCallback(defData)
+        }
+    }
+    data.modal_buka = modal_buka
+    loadData = async function (url = null) {
+        showLoading();
+        var sumberData = "<?php echo $url_sumber_data ?>";
+        var rowScript = <?php echo $row_scirpt ?>;
+
+        var url = !url ? path + sumberData : url;
+        var data = await fetch(url, { method: 'GET' }).then(res => res.json()).then(res => {
+            if (!res.data)
+                return;
+            if ($.fn.DataTable.isDataTable('#' + tableid)) {
+                $('#' + tableid).DataTable().clear();
+                $('#' + tableid).DataTable().destroy();
+            }
+
+            var rows = '';
+            var data = res.data;
+            data.forEach((d, i) => {
+                rows += rowScript(d, i);
+            });
+            $('#' + tableid + ' tbody').html(rows);
+            endLoading();
+            return res.data;
+        });
+        var options = {
+            search: true,
+            info: true,
+            order: true,
+            changeMenu: false,
+            change: false,
+            responsive: true,
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    data: {modal_buka: modal_buka, tableid: tableid, toasCofig: toasCofig, loadData: loadData },
+                    attr: { 'class': 'btn btn-primary' },
+                    text: 'Tambah',
+                    action: async function (e, dt, node, config) {
+                        $(node).prop('disabled', true);
+                        await tambahHandler(config.data);
+                        $(node).prop('disabled', false);
+                    }
+                },
+            ],
+        };
+        
+        if(adaCheckbox){
+            options.select = {
+                style:    'multi',
+                selector: 'td:first-child'
+            };
+            options.columnDefs = [
+                {
+                    targets: 0,
+                    data: null,
+                    defaultContent: '',
+                    orderable: false,
+                    className: 'select-checkbox'
+                }
+            ]
+            var url_delete_data = "<?= $url_delete_data ?>";
+
+           
+            options.buttons.push(
+                {
+                    data: {modal_buka: modal_buka, tableid: tableid, toasCofig: toasCofig, loadData: loadData },
+                    attr: { 'class': 'btn btn-primary', 'type': 'button', 'id': 'btn-edit' },
+                    text: 'Edit',
+                    action: async function (e, dt, node, config) {
+                        $(node).prop('disabled', true);
+                        var data = instance.dataTables[config.data.tableid].rows({ selected: true }).data()
+                        if(data.length != 1){
+                            alert("Pilih Satu baris data");
+                            $(node).prop('disabled', false);
+                            return;
+                        }
+                        await tambahHandler(config.data, true, data[0]);
+
+                        $(node).prop('disabled', false);
+                    }
+                },
+            );
+
+            options.buttons.push(
+                {
+                    data: {modal_buka: modal_buka, tableid: tableid, toasCofig: toasCofig, loadData: loadData },
+                    attr: { 'class': 'btn btn-primary', 'type': 'button', 'id': 'btn-edit' },
+                    text: 'Hapus',
+                    action: async function (e, dt, node, config) {
+                        $(node).prop('disabled', true);
+                        var data = instance.dataTables[config.data.tableid].rows({ selected: true }).data().toArray()
+                        if(data.length == 0){
+                            alert("Pilih baris yang ingin dihapus");
+                            $(node).prop('disabled', false);
+                            return;
+                        }
+                        $("#pros-loading").show();
+                       
+                        var ids = data.map(d => d[0]);
+                        console.log("IDS", ids);
+                        
+                        $.post(path + url_delete_data, {
+                            ids: ids
+                        }, function(res, code, d){
+                            var toastOpt = config.data.toasCofig;
+                            toastOpt.bg = 'bg-success';
+                            toastOpt.title = 'Berhasil';
+                            toastOpt.message = res.message;
+                            config.data.loadData();
+                            makeToast(toastOpt);
+                            
+                        }, 'json').fail(function(res){
+                            var toastOpt = config.data.toasCofig;
+                            res = res.responseJSON
+                            toastOpt.message = res.message;
+                            console.log(res);
+
+                            makeToast(toastOpt);
+                            config.data.loadData();
+
+                            
+                        });
+                        $("#pros-loading").hide();
+                        $(node).prop('disabled', false);
+                    }
+                },
+            );
+
+        }
+        initDatatable('#' + tableid, options);
+
+    }
+    data.loadData = loadData
+    return data;
+}
+
+
+function add_eventlistener(data) {
+
+}
+
+
+function inisialisasi(data) {
+    data.loadData();
+}

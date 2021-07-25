@@ -19,4 +19,13 @@ class Auth extends CI_Controller {
 
         $this->render();
     }
+    function tes(){
+        $this->load->helper('mailsender');
+        $res = sendemail("fathur.pashter15@gmail.com", "Connected" , "Admin Inventory Barang", "dev.kamscode" , false, 'dev.kamscode@kamscodelab.tech');
+
+        if(!$res['sts'])
+            response(['message'=>"Gagal Mengirim Email", 'err' => $res['message']], 500);
+
+        response("COnnected");
+    }
 }

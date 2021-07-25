@@ -2,6 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Dashboard extends CI_Controller {
+    private $pageInfo = array('pageName' => 'Dashboard');
     function __construct() {
         parent::__construct();
 
@@ -9,7 +10,7 @@ class Dashboard extends CI_Controller {
             redirect(base_url());
     }
     function index(){
-        $data = array(
+        $data = $this->pageInfo + array(
             'resource' => array('main', 'dore', 'icons'),
             'sidebar' => 'components/sidebar/sidebar_dore',
             'navbar' => 'components/navbar/navbar_dore',
