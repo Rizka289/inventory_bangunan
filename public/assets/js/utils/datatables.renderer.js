@@ -9,8 +9,14 @@ async function tambahHandler(data, isEdit = false, defData = null) {
     var url_update_data = "<?= $url_update_data ?>";
 
     var form = "<?php echo $form ?>";
-
-    var form = await fetch(path + 'ws/form?f=' + form).then(res => {
+    var pasdata = <?php echo isset($formdata) && !empty($formdata) ? json_encode($formdata) : '{}' ?>;
+    var formdata = new FormData();
+    formdata.append('id', form);
+    formdata.append('data', JSON.stringify(pasdata))
+    var form = await fetch(path + 'ws/form', {
+        method: 'POST', 
+        body: formdata
+    }).then(res => {
         if (res.status != 200)
             return;
         else
@@ -27,7 +33,7 @@ async function tambahHandler(data, isEdit = false, defData = null) {
                 open: true,
                 ajax: true,
                 size: 'modal-lg',
-                modalTitle: 'Tambah data',
+                modalTitle: isEdit ? "Edit data" : 'Tambah data',
                 modalPos: 'right',
                 saatBuka: function () {
                     if (!$('body').hasClass('modal-open'))
@@ -200,7 +206,8 @@ async function persiapan_data() {
         showLoading();
         var sumberData = "<?php echo $url_sumber_data ?>";
         var rowScript = <?php echo $row_scirpt ?>;
-
+        var extra_buttons = <?php echo isset($extra_button) && !empty($extra_button) ? json_encode($extra_button) : '[]' ?>;
+     
         var url = !url ? path + sumberData : url;
         var data = await fetch(url, { method: 'GET' }).then(res => res.json()).then(res => {
             if (!res.data)
@@ -291,6 +298,11 @@ async function persiapan_data() {
                             $(node).prop('disabled', false);
                             return;
                         }
+                        var res = confirm("Yakin Ingin Menghapus Data .?");
+                        if(!res){
+                            $(node).prop('disabled', false);
+                            return;
+                        }
                         $("#pros-loading").show();
                        
                         var ids = data.map(d => d[0]);
@@ -322,6 +334,16 @@ async function persiapan_data() {
             );
 
         }
+
+        extra_buttons.forEach(btn => {
+            options.buttons.push({
+                data: {modal_buka: modal_buka, tableid: tableid, toasCofig: toasCofig, loadData: loadData },
+                attr: { 'class': 'btn btn-primary' },
+                text: btn.text,
+                action: eval(btn.funct)
+            })
+        });
+        window.opt = options
         initDatatable('#' + tableid, options);
 
     }

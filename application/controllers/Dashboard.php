@@ -14,7 +14,7 @@ class Dashboard extends CI_Controller {
             'resource' => array('main', 'dore', 'icons'),
             'sidebar' => 'components/sidebar/sidebar_dore',
             'navbar' => 'components/navbar/navbar_dore',
-            'sidebarConf' => config_sidebar('admin'),
+            'sidebarConf' => config_sidebar(sessiondata('login', 'user_role')),
             'navbarConf' => array(
                 'adaSidebar' => true
             )

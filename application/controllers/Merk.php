@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Satuan extends CI_Controller
+class Merk extends CI_Controller
 {
 
 	private $params = array(
@@ -25,34 +25,34 @@ class Satuan extends CI_Controller
 
 		$data = $this->params + [
 			'resource' => array('main', 'dore', 'icons', 'form', 'datatables'),
-			'subPageName' => 'Kelola Satuan',
+			'subPageName' => 'Kelola Merk',
 			'data_content' => array(
-				'dtid' => 'dt-satuan',
-				'dtTitle' => 'Daftar Satuan Barang',
+				'dtid' => 'dt-merk',
+				'dtTitle' => 'Daftar Merk Material',
 				'head' => array(
 					'Id',
-					'Satuan',					
+					'Merk',					
 				)
 			),
 			'content' => array('components/compui/datatables.responsive'),
-			'sidebarConf' => config_sidebar('admin', 4, 0)
+			'sidebarConf' => config_sidebar('admin', 4, 1)
 		];
 		$this->add_cachedJavascript('utils/datatables.renderer', 'file', 'body:end', [
-			'tableid' => 'dt-satuan',
-			'url_tambah_data' => 'satuan/add',
-			'url_sumber_data' => 'satuan/list',
-			'url_update_data' => 'satuan/update',
-			'url_delete_data' => 'satuan/delete',
-			'form' => 'forms/tambah_satuan',
+			'tableid' => 'dt-merk',
+			'url_tambah_data' => 'merk/add',
+			'url_sumber_data' => 'merk/list',
+			'url_update_data' => 'merk/update',
+			'url_delete_data' => 'merk/delete',
+			'form' => 'forms/tambah_merk',
 			'adaCheckbox' => "true",
 			'row_scirpt' => "(d, i) => {
 				return '<tr>' +
-						'<td>' + d.id_uom + '</td>'+
-						'<td>' + d.uom + '</td>'+
+						'<td>' + d.id_merk_material + '</td>'+
+						'<td>' + d.merk_material + '</td>'+
 					'</tr>';
 			} ",
 			'editCallback' => "(data) => {
-				$('#nama-satuan').val(data[1])
+				$('#nama-merk').val(data[1])
 				$('#id').val(data[0])
 			}"
 		]);
@@ -61,7 +61,7 @@ class Satuan extends CI_Controller
 	}
 
 	function list(){
-		$res = $this->Satuan_model->getAll();
+		$res = $this->db->get('merk_material')->result();
 		response(['data' => $res]);
 	}
 
@@ -69,33 +69,38 @@ class Satuan extends CI_Controller
 		if(!httpmethod())
 			response("Metode Akses Ilegal", 403);
 
-		$res = $this->Satuan_model->add();
-		
-		if($res)
-			response("Berhasil menambah satuan");
-		else
-			response("Gagal, Terjadi kesalahan", 500);
+		try {
+            unset($_POST['id']);
+            $this->db->insert('merk_material', $_POST);
+        } catch (\Throwable $th) {
+            response("Gagal, Terjadi kesalahan", 500);
+        }
+    
+        response("Berhasil menambah merk");
 	}
 
 	function update(){
 		if(!httpmethod())
 			response("Metode Akses Ilegal", 403);
 
-		$res = $this->Satuan_model->update($_POST);
-		if($res)
-			response("Berhasil Mengupdate satuan");
-		else
-			response("Gagal, Terjadi kesalahan", 500);
+		try {
+            $this->db->where('id_merk_material', $_POST['id'])->update('merk_material', ['merk_material' => $_POST['merk_material']]);
+        } catch (\Throwable $th) {
+            response("Gagal, Terjadi kesalahan", 500);
+        }
+        response("Berhasil Mengupdate merk");
 	}
 
 	function delete(){
 		if(!httpmethod())
 			response("Metode Akses Ilegal", 403);
 
-		$res = $this->Satuan_model->delete($_POST['ids']);
-		if($res)
-			response("Berhasil Menghapus satuan");
-		else
-			response("Gagal, Terjadi kesalahan", 500);
+        try {
+            $this->db->where_in('id_merk_material', $_POST['ids'])->delete('merk_material');
+        } catch (\Throwable $th) {
+            response("Gagal, Terjadi kesalahan", 500);
+
+        }
+        response("Berhasil Menghapus merk");
 	}
 }

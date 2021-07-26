@@ -94,8 +94,8 @@
                         <p id="<?php echo $menu['id']?>" style="cursor: pointer;" class="dropdown-item" data-link="<?php echo $menu['link'] ?>" ><?php echo $menu['link']; ?></p>
                     <?php endforeach ?>
                 <?php else: ?>
-                    <p id="akun" style="cursor: pointer;" class="dropdown-item" data-link="" >Akun saya</p>
-                    <p id="logout" style="cursor: pointer;" class="dropdown-item" data-link="auth/logout" >Keluar</p>
+                    <p id="akun" style="cursor: pointer;" class="dropdown-item" data-link="<?= base_url('users/akun')?>" >Akun saya</p>
+                    <p id="logout" style="cursor: pointer;" class="dropdown-item" data-act="<?= base_url('auth/logout') ?>" data-link="<?= base_url() ?>" >Keluar</p>
                 <?php endif ?>
             </div>
         </div>

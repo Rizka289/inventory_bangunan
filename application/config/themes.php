@@ -11,7 +11,7 @@ $config['themes']['main']['js'] = array(
     array('pos' => 'head', 'src' => VENDOR_PATH . 'jquery-validation/dist/jquery.validate.min.js'),
     array('pos' => 'head', 'src' => VENDOR_PATH . 'moment/moment.min.js'),
     array('pos' => 'head', 'src' => VENDOR_PATH . 'kamscore/js/Kamscore.js'),
-    // array('pos' => 'body:end', 'src' => ASSETS_PATH . 'js/main.js'),
+    array('pos' => 'body:end', 'src' => base_url('public/assets/js/main.js')),
     array('pos' => 'head', 'src' => VENDOR_PATH . 'kamscore/js/uihelper.js'),
 );
 

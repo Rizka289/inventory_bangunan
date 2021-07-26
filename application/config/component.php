@@ -5,52 +5,69 @@ $config['component']['dore']['sidebar'] = array(
     'admin' => array(
         'menus' => array(
             array('text' => 'Dashboard', 'icon' => 'iconsmind-Home', 'link' => base_url('dashboard')),
-            array('text' => 'Catat Transaksi', 'link' =>  '#transaksi', 'icon' => 'iconsmind-File-Edit'),
-            array('text' => 'Laporan', 'link' => '#laporan', 'icon' => 'iconsmind-Bar-Chart'),
+            array('text' => 'Gudang', 'link' =>  '#inventory', 'icon' => 'iconsmind-Warehouse'),
+            array('text' => 'Stok Barang', 'link' =>  '#stok', 'icon' => 'iconsmind-Shop'),
+            array('text' => 'Material', 'link' =>  base_url('material'), 'icon' => 'iconsmind-File-Edit'),
             array('text' => 'Utilitas', 'link' => '#util', 'icon' => 'simple-icon-equalizer'),
         ),
         'subMenus' => array(
             array(
-                'induk' => 'transaksi',
+                'induk' => 'inventory',
                 'menus' => array(
-                    array('text' => 'Masuk', 'link' => base_url('transaksi/masuk')),
-                    array('text' => 'Keluar', 'link' => base_url('transaksi/keluar')),
+                    array('text' => 'Daftar Barang', 'link' => base_url('inventory'), 'icon' => 'iconsmind-Box-Full'),
+                    array('text' => 'Catat Transaksi Masuk', 'link' => base_url('inventory/masuk'), 'icon' => 'iconsmind-Inbox-Into'),
                 )
             ),
             array(
-                'induk' => 'laporan',
+                'induk' => 'stok',
                 'menus' => array(
-                    array('text' => 'Data transaksi', 'link' => base_url('laporan')),
-                    array('text' => 'Pembayaran SPP', 'link' => base_url('laporan/spp')),
-                    array('text' => 'Grafik', 'link' => base_url('laporan/grafik')),
+                    array('text' => 'Daftar Barang', 'link' => base_url('stok'), 'icon' => 'iconsmind-Box-Full'),
+                    array('text' => 'Catat Transaksi Keluar', 'link' => base_url('stok/keluar'), 'icon' => 'iconsmind-Inbox-Out'),
                 )
             ),
             array(
-                'induk' => 'util', 
+                'induk' => 'util',
                 'menus' => array(
-                    array('text' => 'User Management', 'link' => base_url('users'), 'icon' => 'simple-icon-people'),
                     array('text' => 'Kelola Satuan', 'link' => base_url('satuan'), 'icon' => 'iconsmind-Tag'),
+                    array('text' => 'Kelola Merk', 'link' => base_url('merk'), 'icon' => 'iconsmind-Tag-4'),
+                    array('text' => 'Kelola Supplier', 'link' => base_url('supplier'), 'icon' => 'iconsmind-User'),
+                    array('text' => 'User Management', 'link' => base_url('users'), 'icon' => 'simple-icon-people'),
+                    array('text' => 'Akun Saya', 'link' => base_url('users/akun'), 'icon' => 'simple-icon-user'),
 
                 )
             ),
 
         )
     ),
-    'kepala sekolah' => array(
+    'staff' => array(
         'menus' => array(
-            array('text' => 'Dashboard', 'icon' => 'iconsmind-Home', 'link' => base_url('dashboard')),
-            array('text' => 'Laporan', 'link' =>  base_url('laporan'), 'icon' => 'iconsmind-Bar-Chart'),
-            array('text' => 'User Management', 'link' =>  base_url('user/manage'), 'icon' => 'simple-icon-user'),
-            array('text' => 'Siswa', 'link' =>  base_url('siswa'), 'icon' => 'iconsmind-Students'),
+            array('text' => 'Stok Barang', 'link' =>  '#stok', 'icon' => 'iconsmind-Shop'),
+            array('text' => 'Laporan', 'link' =>  '#laporan', 'icon' => 'iconsmind-File-Share'),
+            array('text' => 'Utilitas', 'link' => '#util', 'icon' => 'simple-icon-equalizer'),
+        ),
+        'subMenus' => array(
+            array(
+                'induk' => 'stok',
+                'menus' => array(
+                    array('text' => 'Daftar Barang', 'link' => base_url('stok'), 'icon' => 'iconsmind-Box-Full'),
+                    array('text' => 'Catat Transaksi Keluar', 'link' => base_url('stok/keluar'), 'icon' => 'iconsmind-Inbox-Out'),
+                )
+            ),
+            array(
+                'induk' => 'laporan',
+                'menus' => array(
+                    array('text' => 'Barang Masuk', 'link' => base_url('users'), 'icon' => 'iconsmind-Inbox-Into'),
+                    array('text' => 'Barang Keluar', 'link' => base_url('satuan'), 'icon' => 'iconsmind-Inbox-Out'),
+
+                )
+            ),
+            array(
+                'induk' => 'util',
+                'menus' => array(
+                   array('text' => 'Akun Saya', 'link' => base_url('users/akun'), 'icon' => 'simple-icon-user'),
+                )
+            ),
+
         )
-        // 'subMenus' => array(
-        //     array(
-        //         'induk' => 'transaksi',
-        //         'menus' => array(
-        //             array('text' => 'Masuk', 'active' => true, 'link' => base_url('transaksi/masuk')),
-        //             array('text' => 'Keluar', 'link' => base_url('transaksi/keluar')),
-        //         )
-        //     )
-        // )
     )
 );

@@ -40,7 +40,7 @@ class Users extends CI_Controller
                 )
             ),
             'content' => array('components/compui/datatables.responsive'),
-            'sidebarConf' => config_sidebar('admin', 3, 0)
+            'sidebarConf' => config_sidebar('admin', 4, 3)
         ];
         $this->add_cachedJavascript('utils/datatables.renderer', 'file', 'body:end', [
             'tableid' => 'dt-user',
@@ -84,18 +84,18 @@ class Users extends CI_Controller
     {
         if (!httpmethod())
             response("Metode Akses Ilegal", 403);
-        $pass = random(8);
+        $pass = $_POST['hp'];
         $data = fieldmapping($_POST, 'user', ['dibuat' => waktu(), 'role' => 'staff', 'avatar' => 'default.jpg', 'registrar' => sessiondata('login', 'user_name'), 'password' => password_hash($pass, PASSWORD_DEFAULT)]);
         try {
             $this->db->insert('users', $data);
         } catch (\Throwable $th) {
             response("Terjadi kesalahan", 500);
         }
-        $this->load->helper('mailsender');
-        $res = sendemail($data['user_email'], "Anda telah di daftarkan sebagai " . $data['user_role'] . " di Inventory Barang, passwod default anda adalah <b>" . $pass . "</b>, segera rubah password anda", "Register Inventory Barang", $data['registrar'] . " - Admin Inventory Barang", false, 'dev.kamscode@kamscode.tech');
+        // $this->load->helper('mailsender');
+        // $res = sendemail($data['user_email'], "Anda telah di daftarkan sebagai " . $data['user_role'] . " di Inventory Barang, passwod default anda adalah <b>" . $pass . "</b>, segera rubah password anda", "Register Inventory Barang", $data['registrar'] . " - Admin Inventory Barang", false, 'dev.kamscode@kamscode.tech');
 
-        if (!$res['sts'])
-            response(['message' => "Gagal Mengirim Email", 'err' => $res['message']], 500);
+        // if (!$res['sts'])
+        //     response(['message' => "Gagal Mengirim Email", 'err' => $res['message']], 500);
 
         response("Berhasil, Mendaftarkan User Baru");
     }
