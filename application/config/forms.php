@@ -31,5 +31,6 @@ $config['field_mapping']['inventory'] = array(
     'jumlah' => 'jumlah',
     'harga' => 'harga',
     'keterangan' => 'keterangan',
-    'tanggal' => 'tanggal'
+    'tanggal' => 'tanggal',
+    'jenis' => 'jenis',
 );

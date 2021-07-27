@@ -1,6 +1,6 @@
 <div class="form-group">
     <label for="material">Nama Material</label>
-    <select name="material" id="material" class='form-control'>
+    <select required name="material" id="material" class='form-control'>
        <option value="" selected>-- Pilih --</option>
         <?php foreach($material as $m): ?>
         <option value="<?= $m->id_nama_material ?>"><?= $m->nama_material ?></option>
@@ -9,7 +9,7 @@
 </div>
 <div class="form-group">
     <label for="merk">Merk Material</label>
-    <select name="merk" id="merk" class='form-control'>
+    <select required name="merk" id="merk" class='form-control'>
        <option value="" selected>-- Pilih --</option>
         <?php foreach($merk as $m): ?>
         <option value="<?= $m->id_merk_material ?>"><?= $m->merk_material ?></option>
@@ -18,7 +18,7 @@
 </div>
 <div class="form-group">
     <label for="satuan">Satuan</label>
-    <select name="satuan" id="satuan" class='form-control'>
+    <select required name="satuan" id="satuan" class='form-control'>
        <option value="" selected>-- Pilih --</option>
         <?php foreach($satuan as $m): ?>
         <option value="<?= $m->id_uom ?>"><?= $m->uom ?></option>
@@ -27,7 +27,7 @@
 </div>
 <div class="form-group">
     <label for="supplier">Supplier</label>
-    <select name="supplier" id="supplier" class='form-control'>
+    <select required name="supplier" id="supplier" class='form-control'>
        <option value="" selected>-- Pilih --</option>
         <?php foreach($supplier as $m): ?>
         <option value="<?= $m->id_supplier ?>"><?= $m->nama ?></option>
@@ -36,7 +36,7 @@
 </div>
 <div class="form-group">
     <label for="jumlah">Jumlah</label>
-    <input class="form-control" data-rule-digits="true" type="jumlah" required id="jumlah" name="jumlah">
+    <input class="form-control" data-rule-number="true" type="jumlah" required id="jumlah" name="jumlah">
 </div>
 <div class="form-group">
     <label for="harga">Harga</label>

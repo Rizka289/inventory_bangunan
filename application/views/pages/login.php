@@ -12,8 +12,8 @@
                 </div>
                 <form id="<?= $formid ?>" method="POST" action="<?php echo base_url('ws/login') ?>" style="margin-top: 13%;">
                     <div class="form-group">
-                        <label class="control-label">Username atau Email</label>
-                        <input autocomplete="off" placeholder="Masukkan Email atau Username" name="user" required type="text" id="user" class="form-control">
+                        <label class="control-label">Email</label>
+                        <input autocomplete="off" placeholder="Masukkan Email atau Username" name="user" required type="email" id="user" class="form-control">
                     </div>
                     <div class="form-group">
                         <label class="control-label">Password</label>

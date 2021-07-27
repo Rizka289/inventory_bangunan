@@ -207,7 +207,9 @@ async function persiapan_data() {
         var sumberData = "<?php echo $url_sumber_data ?>";
         var rowScript = <?php echo $row_scirpt ?>;
         var extra_buttons = <?php echo isset($extra_button) && !empty($extra_button) ? json_encode($extra_button) : '[]' ?>;
-     
+        var ada_hapus = <?php isset($ada_hapus) ? var_export($ada_hapus) : var_export(true) ?>;
+        var ada_edit = <?php isset($ada_edit) ? var_export($ada_edit) : var_export(true) ?>;
+
         var url = !url ? path + sumberData : url;
         var data = await fetch(url, { method: 'GET' }).then(res => res.json()).then(res => {
             if (!res.data)
@@ -265,73 +267,77 @@ async function persiapan_data() {
             var url_delete_data = "<?= $url_delete_data ?>";
 
            
-            options.buttons.push(
-                {
-                    data: {modal_buka: modal_buka, tableid: tableid, toasCofig: toasCofig, loadData: loadData },
-                    attr: { 'class': 'btn btn-primary', 'type': 'button', 'id': 'btn-edit' },
-                    text: 'Edit',
-                    action: async function (e, dt, node, config) {
-                        $(node).prop('disabled', true);
-                        var data = instance.dataTables[config.data.tableid].rows({ selected: true }).data()
-                        if(data.length != 1){
-                            alert("Pilih Satu baris data");
+            if(ada_edit){
+                options.buttons.push(
+                    {
+                        data: {modal_buka: modal_buka, tableid: tableid, toasCofig: toasCofig, loadData: loadData },
+                        attr: { 'class': 'btn btn-primary', 'type': 'button', 'id': 'btn-edit' },
+                        text: 'Edit',
+                        action: async function (e, dt, node, config) {
+                            $(node).prop('disabled', true);
+                            var data = instance.dataTables[config.data.tableid].rows({ selected: true }).data()
+                            if(data.length != 1){
+                                alert("Pilih Satu baris data");
+                                $(node).prop('disabled', false);
+                                return;
+                            }
+                            await tambahHandler(config.data, true, data[0]);
+    
                             $(node).prop('disabled', false);
-                            return;
                         }
-                        await tambahHandler(config.data, true, data[0]);
-
-                        $(node).prop('disabled', false);
-                    }
-                },
-            );
-
-            options.buttons.push(
-                {
-                    data: {modal_buka: modal_buka, tableid: tableid, toasCofig: toasCofig, loadData: loadData },
-                    attr: { 'class': 'btn btn-primary', 'type': 'button', 'id': 'btn-edit' },
-                    text: 'Hapus',
-                    action: async function (e, dt, node, config) {
-                        $(node).prop('disabled', true);
-                        var data = instance.dataTables[config.data.tableid].rows({ selected: true }).data().toArray()
-                        if(data.length == 0){
-                            alert("Pilih baris yang ingin dihapus");
-                            $(node).prop('disabled', false);
-                            return;
-                        }
-                        var res = confirm("Yakin Ingin Menghapus Data .?");
-                        if(!res){
-                            $(node).prop('disabled', false);
-                            return;
-                        }
-                        $("#pros-loading").show();
-                       
-                        var ids = data.map(d => d[0]);
+                    },
+                );
+            }
+            
+            if(ada_hapus){
+                options.buttons.push(
+                    {
+                        data: {modal_buka: modal_buka, tableid: tableid, toasCofig: toasCofig, loadData: loadData },
+                        attr: { 'class': 'btn btn-primary', 'type': 'button', 'id': 'btn-edit' },
+                        text: 'Hapus',
+                        action: async function (e, dt, node, config) {
+                            $(node).prop('disabled', true);
+                            var data = instance.dataTables[config.data.tableid].rows({ selected: true }).data().toArray()
+                            if(data.length == 0){
+                                alert("Pilih baris yang ingin dihapus");
+                                $(node).prop('disabled', false);
+                                return;
+                            }
+                            var res = confirm("Yakin Ingin Menghapus Data .?");
+                            if(!res){
+                                $(node).prop('disabled', false);
+                                return;
+                            }
+                            $("#pros-loading").show();
                         
-                        $.post(path + url_delete_data, {
-                            ids: ids
-                        }, function(res, code, d){
-                            var toastOpt = config.data.toasCofig;
-                            toastOpt.bg = 'bg-success';
-                            toastOpt.title = 'Berhasil';
-                            toastOpt.message = res.message;
-                            config.data.loadData();
-                            makeToast(toastOpt);
+                            var ids = data.map(d => d[0]);
                             
-                        }, 'json').fail(function(res){
-                            var toastOpt = config.data.toasCofig;
-                            res = res.responseJSON
-                            toastOpt.message = res.message;
+                            $.post(path + url_delete_data, {
+                                ids: ids
+                            }, function(res, code, d){
+                                var toastOpt = config.data.toasCofig;
+                                toastOpt.bg = 'bg-success';
+                                toastOpt.title = 'Berhasil';
+                                toastOpt.message = res.message;
+                                config.data.loadData();
+                                makeToast(toastOpt);
+                                
+                            }, 'json').fail(function(res){
+                                var toastOpt = config.data.toasCofig;
+                                res = res.responseJSON
+                                toastOpt.message = res.message;
 
-                            makeToast(toastOpt);
-                            config.data.loadData();
+                                makeToast(toastOpt);
+                                config.data.loadData();
 
-                            
-                        });
-                        $("#pros-loading").hide();
-                        $(node).prop('disabled', false);
-                    }
-                },
-            );
+                                
+                            });
+                            $("#pros-loading").hide();
+                            $(node).prop('disabled', false);
+                        }
+                    },
+                );
+            }
 
         }
 

@@ -5,7 +5,6 @@ class Dashboard extends CI_Controller {
     private $pageInfo = array('pageName' => 'Dashboard');
     function __construct() {
         parent::__construct();
-
         if(!is_login())
             redirect(base_url());
     }

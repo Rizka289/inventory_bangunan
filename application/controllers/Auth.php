@@ -30,7 +30,7 @@ class Auth extends CI_Controller {
     }
 
     function logout(){
-        // $this->session->unset_userdata('login');
+        $this->session->unset_userdata('login');
         response("Berhasil Logout");
     }
 }
