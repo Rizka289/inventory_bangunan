@@ -4,13 +4,16 @@ $(document).ready(async function () {
     inisialisasi(data);
 });
 
-async function tambahHandler(data, isEdit = false, defData = null) {
+async function tambahHandler(data, isEdit = false, defData = null, formBody = null, modalConf = null) {
     var url_tambah_data = "<?php echo $url_tambah_data ?>";
     var url_update_data = "<?= $url_update_data ?>";
 
     var form = "<?php echo $form ?>";
     var pasdata = <?php echo isset($formdata) && !empty($formdata) ? json_encode($formdata) : '{}' ?>;
     var formdata = new FormData();
+    console.log("FORM", formBody)
+    var customBody = formBody != null;
+    
     formdata.append('id', form);
     formdata.append('data', JSON.stringify(pasdata))
     var form = await fetch(path + 'ws/form', {
@@ -32,9 +35,10 @@ async function tambahHandler(data, isEdit = false, defData = null) {
                 destroy: true,
                 open: true,
                 ajax: true,
-                size: 'modal-lg',
+                rules: modalConf && modalConf.rules ? modalConf.rules : null,
+                size: modalConf && modalConf.size ? modalConf.size :  'modal-lg',
                 modalTitle: isEdit ? "Edit data" : 'Tambah data',
-                modalPos: 'right',
+                modalPos: modalConf && modalConf.pos ? modalConf.pos : 'right',
                 saatBuka: function () {
                     if (!$('body').hasClass('modal-open'))
                         $('body').addClass('modal-open');
@@ -81,16 +85,16 @@ async function tambahHandler(data, isEdit = false, defData = null) {
                 },
                 formOpt: {
                     formId: "form-" + data.tableid,
-                    formAct: isEdit ? path + url_update_data : path + url_tambah_data,
+                    formAct:  modalConf && modalConf.submit ? path + modalConf.submit : isEdit ? path + url_update_data : path + url_tambah_data,
                     formMethod: 'POST',
                     formAttr: ''
                 },
                 modalBody: {
-                    input: [
+                    input: !customBody ? [
                         {
                             type: 'custom', text: res,
                         },
-                    ],
+                    ] : formBody,
                     buttons: [
                         { type: 'reset', data: 'data-dismiss="modal"', text: 'Batal', id: "batal", class: "btn btn btn-warning" },
                         { type: 'button', text: 'kembali', id: "kembali", class: "btn btn btn-secondary" },
@@ -209,6 +213,7 @@ async function persiapan_data() {
         var extra_buttons = <?php echo isset($extra_button) && !empty($extra_button) ? json_encode($extra_button) : '[]' ?>;
         var ada_hapus = <?php isset($ada_hapus) ? var_export($ada_hapus) : var_export(true) ?>;
         var ada_edit = <?php isset($ada_edit) ? var_export($ada_edit) : var_export(true) ?>;
+        var index_id = <?php echo isset($index_id) ? $index_id : '0' ?>;
 
         var url = !url ? path + sumberData : url;
         var data = await fetch(url, { method: 'GET' }).then(res => res.json()).then(res => {
@@ -310,7 +315,7 @@ async function persiapan_data() {
                             }
                             $("#pros-loading").show();
                         
-                            var ids = data.map(d => d[0]);
+                            var ids = data.map(d => d[index_id]);
                             
                             $.post(path + url_delete_data, {
                                 ids: ids
