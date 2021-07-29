@@ -21,13 +21,15 @@ if (!isset($data_content))
         <div class="col-12">
             <h1><?php echo isset($pageName) ? $pageName : null ?></h1>
             <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
-                <ol class="breadcrumb pt-0">
-                    <li class="breadcrumb-item">
-                        <p><?php echo isset($subPageName) ? $subPageName : null ?></p>
-                    </li>
-                </ol>
+                <?php if (isset($subPageName) && !empty($subPageName)) : ?>
+                    <ol class="breadcrumb pt-0">
+                        <li class="breadcrumb-item">
+                            <p><?php echo $subPageName ?></p>
+                        </li>
+                    </ol>
+                <?php endif ?>
             </nav>
-            <?php if(isset($pageName)):?>
+            <?php if (isset($pageName)) : ?>
                 <div class="separator mb-5"></div>
             <?php endif ?>
         </div>
@@ -35,7 +37,7 @@ if (!isset($data_content))
         if (isset($content) && !empty($content)) {
             if (is_array($content)) {
                 foreach ($content as $c) {
-                    if(!empty($c))
+                    if (!empty($c))
                         include_view($c, $data_content);
         ?>
                     <br>
@@ -47,4 +49,10 @@ if (!isset($data_content))
     </div>
 </main>
 <?php
-include_view('components/footer/main', array('resource' => $resource, 'extra_js' => isset($extra_js) ? $extra_js : null, 'extra_css' => isset($extra_css) ? $extra_css : null));
+$footerParams = array(
+    'resource' => $resource,
+    'extra_js' => isset($extra_js) ? $extra_js : null,
+    'extra_css' => isset($extra_css) ? $extra_css : null,
+    'adaThemeSelector' => isset($adaThemeSelector) ? $adaThemeSelector : false,
+);
+include_view('components/footer/main', $footerParams);

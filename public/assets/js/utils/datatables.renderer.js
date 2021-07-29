@@ -114,6 +114,10 @@ async function persiapan_data() {
 
     var tableid = "<?php echo $tableid ?>"
     var adaCheckbox = <?php echo isset($adaCheckbox) ? $adaCheckbox : 'false' ?>;
+    var ada_filter_tanggal = <?php isset($ada_filter_tanggal) ? var_export($ada_filter_tanggal) : var_export(false) ?>;
+
+    data.ada_filter_tanggal = ada_filter_tanggal;
+
     data.tableid = tableid;
     var toasCofig = {
         wrapper: '#' + tableid,
@@ -353,12 +357,17 @@ async function persiapan_data() {
         }
 
         extra_buttons.forEach(btn => {
-            options.buttons.push({
+            if(btn.nonCustom){
+                options.buttons.push(btn.button)
+            }else{
+                options.buttons.push({
                 data: {modal_buka: modal_buka, tableid: tableid, toasCofig: toasCofig, loadData: loadData },
                 attr: { 'class': 'btn btn-primary' },
                 text: btn.text,
                 action: eval(btn.funct)
             })
+            }
+            
         });
         window.opt = options
         initDatatable('#' + tableid, options);
@@ -375,5 +384,33 @@ function add_eventlistener(data) {
 
 
 function inisialisasi(data) {
+    var sumberData = "<?php echo $url_sumber_data ?>";
+    if(data.ada_filter_tanggal){
+        var startDate = "<?php echo isset($minTanggal) ? $minTanggal : waktu(null, MYSQL_DATE_FORMAT) ?>";
+        var endDate = "<?php echo isset($maxTanggal) ? $maxTanggal : waktu(null, MYSQL_DATE_FORMAT) ?>";
+    
+        $("#filter-tanggal").daterangepicker({
+            timePicker: false,
+            showDropdowns: true,
+            startDate: moment(startDate).format("MM/D/Y"),
+            endDate: moment(endDate).format('MM/D/Y')
+        })
+
+        $("#filter-tanggal").on('apply.daterangepicker', function(e, picker){
+            var val = $(this).val().split(' - ');
+            var start = moment(val[0]).format("Y-MM-DD");
+            var end = moment(val[1]).format("Y-MM-DD");
+            
+            var arrUrl = sumberData.split('?');
+
+            if(arrUrl.length == 0)
+                sumberData += "?start=" + start + "&end=" + end
+            else
+                sumberData = arrUrl[0] + "?start=" + start + "&end=" + end
+
+            data.loadData(path + sumberData);
+        })
+    }
+        
     data.loadData();
 }

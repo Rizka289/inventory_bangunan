@@ -17,6 +17,8 @@
                     if (isset($toolbar))
                         include_view($toolbar, $dataToolbar);
                     ?>
+
+                    
                 </div>
                 <div class="table-responsive">
                     <table id="<?php echo $dtid ?>" data-export-title="<?php echo isset($exportTitle) ? $exportTitle : null ?>">

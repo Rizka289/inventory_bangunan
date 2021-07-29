@@ -18,7 +18,7 @@ class Inventory_model extends CI_Model{
 				unset($barang->id_inventory_bangunan);
 				$average = ((($input['harga'] - $barang->harga)/ ($barang->total + $input["jumlah"])) * $input['jumlah']) + $barang->harga;
 				$barang->harga = $average;
-				$this->db->where('id_inventory_bangunan', $id)->update('inventory_bangunan', $barang[0]);
+				$this->db->where('id_inventory_bangunan', $id)->update('inventory_bangunan', $barang);
 			}
 			else{
 				$input['total'] = $input['jumlah'];

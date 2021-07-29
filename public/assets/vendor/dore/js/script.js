@@ -34,18 +34,20 @@ function loadStyle(href, callback) {
     var themeColorsDom =
       '<div class="theme-colors"> <div class="p-4"> <p class="text-muted mb-2">Light Theme</p> <div class="d-flex flex-row justify-content-between mb-4"> <a href="#" data-theme="dore.light.blue.min.css" class="theme-color theme-color-blue"></a> <a href="#" data-theme="dore.light.purple.min.css" class="theme-color theme-color-purple"></a> <a href="#" data-theme="dore.light.green.min.css" class="theme-color theme-color-green"></a> <a href="#" data-theme="dore.light.orange.min.css" class="theme-color theme-color-orange"></a> <a href="#" data-theme="dore.light.red.min.css" class="theme-color theme-color-red"></a> </div> <p class="text-muted mb-2">Dark Theme</p> <div class="d-flex flex-row justify-content-between"> <a href="#" data-theme="dore.dark.blue.min.css" class="theme-color theme-color-blue"></a> <a href="#" data-theme="dore.dark.purple.min.css" class="theme-color theme-color-purple"></a> <a href="#" data-theme="dore.dark.green.min.css" class="theme-color theme-color-green"></a> <a href="#" data-theme="dore.dark.orange.min.css" class="theme-color theme-color-orange"></a> <a href="#" data-theme="dore.dark.red.min.css" class="theme-color theme-color-red"></a> </div> </div> <a href="#" class="theme-button"> <i class="simple-icon-magic-wand"></i> </a> </div>';
     $("body").append(themeColorsDom);
-    var theme = "dore.light.green.min.css";
+    var theme = "dore.light.green.css";
   
     if (typeof Storage !== "undefined") {
       if (localStorage.getItem("theme")) {
         theme = localStorage.getItem("theme");
+        theme = theme.replace('.min', '');
       }
     }
   
     $(".theme-color[data-theme='" + theme + "']").addClass("active");
     
-    var baseurl = location.hostname == 'localhost' ? location.origin + location.pathname : location.origin;
-    console.log(baseurl);
+    var pathname = location.pathname.split("/");
+    var baseurl = location.hostname == 'localhost' ? location.origin + "/" + pathname[0] + pathname[1] : location.origin;
+
     loadStyle(baseurl + '/public/assets/vendor/dore/css/' + theme, onStyleComplete);
     function onStyleComplete() {
       setTimeout(onStyleCompleteDelayed, 300);

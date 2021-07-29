@@ -26,7 +26,8 @@ if (isset($extra_css) && !empty($extra_css)) {
 ?>
 
 <script>
-    var adaThemeSelector = <?php echo !empty($adaThemeSelector) ? boolval($adaThemeSelector) : 'false' ?>;
+    var adaThemeSelector = <?php !empty($adaThemeSelector) ? var_export($adaThemeSelector) : var_export(false) ?>;
+    console.log("TEHEE", adaThemeSelector);
     $(document).ready(function(){
         if(adaThemeSelector && themeSelector && typeof(themeSelector) === "function")
             themeSelector();

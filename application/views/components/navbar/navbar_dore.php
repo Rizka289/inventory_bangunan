@@ -82,7 +82,7 @@
 
         <div class="user d-inline-block">
             <button class="btn btn-empty p-0" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="name"><?php echo !empty(sessiondata('login', 'user_name')) ? sessiondata('login', 'user_name') : sessiondata('login', 'user_name') ?></span>
+                <span class="name text-primary"><?php echo !empty(sessiondata('login', 'user_name')) ? sessiondata('login', 'user_name') : sessiondata('login', 'user_name') ?></span>
                 <span>
                     <img alt="Profile Picture" src="<?php echo base_url('public/img/profile/' . sessiondata('login', 'user_avatar')) ?>" />
                 </span>

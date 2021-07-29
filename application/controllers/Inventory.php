@@ -9,6 +9,7 @@ class Inventory extends CI_Controller
 		'navbar' => 'components/navbar/navbar_dore',
 		'sidebar' => 'components/sidebar/sidebar_dore',
 		'loadingAnim' => true,
+		'adaThemeSelector' => true,
 		'navbarConf' => array('adaSidebar' => true)
 	);
 	public function __construct()
@@ -100,7 +101,7 @@ class Inventory extends CI_Controller
 	function delete(){
 		if(!httpmethod())
 			response("Metode Akses Ilegal", 403);
-		
+		$this->Inventory_model->delete_inventory($_POST);
 	}
 
 	function masuk (){

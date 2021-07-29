@@ -10,7 +10,9 @@ class Auth extends CI_Controller {
         $data = array(
             'resource' => array('main', 'dore'),
             'content' => array('pages/login'),
-            'data_content' => array('formid' => 'form-login')
+            'data_content' => array('formid' => 'form-login'),
+		    'adaThemeSelector' => true,
+
             // 'pageName' => 'Hallo, Selamat Datang'
         );
         $this->addViews('templates/backoffice_dore', $data);

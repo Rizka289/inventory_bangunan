@@ -8,6 +8,7 @@ class Stok extends CI_Controller
         'navbar' => 'components/navbar/navbar_dore',
         'sidebar' => 'components/sidebar/sidebar_dore',
         'loadingAnim' => true,
+		'adaThemeSelector' => true,
         'navbarConf' => array('adaSidebar' => true)
     );
     public function __construct()
@@ -29,7 +30,7 @@ class Stok extends CI_Controller
                 'head' => array('No', 'Id', 'Material', 'Merk', 'Satuan', 'Supplier','Harga', 'Stok', 'Id Induk', 'Total')
             ),
             'content' => array('components/compui/datatables.responsive'),
-            'sidebarConf' => config_sidebar('admin', 2)
+            'sidebarConf' => config_sidebar(sessiondata('login', 'user_role'), 2)
         ];
 
         $this->add_cachedJavascript('utils/datatables.renderer', 'file', 'body:end', [

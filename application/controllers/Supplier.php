@@ -9,6 +9,7 @@ class Supplier extends CI_Controller
 		'navbar' => 'components/navbar/navbar_dore',
 		'sidebar' => 'components/sidebar/sidebar_dore',
 		'loadingAnim' => true,
+		'adaThemeSelector' => true,
 		'navbarConf' => array('adaSidebar' => true)
 	);
 	public function __construct()

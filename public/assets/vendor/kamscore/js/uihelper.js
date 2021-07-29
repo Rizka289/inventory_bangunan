@@ -25,14 +25,15 @@ uihelper = function () {
     }
     this.instance = {
         validator: {},
-        dropzone: {}
+        dropzone: {},
+        dataTables: {}
     };
 
 
     this.getInstance = function () {
         return this.instance;
     }
-    this.setInstance = function(ins, key, val){
+    this.setInstance = function (ins, key, val) {
         this.instance[ins][key] = val;
     }
     this.tambahkanBody = function (type, opt) {
@@ -73,7 +74,7 @@ uihelper = function () {
                 buttons.forEach(el => {
                     var id = !el.id ? "" : el.id;
                     var data = el.data ? el.data : "";
-                    buttonsEl += '<button style="margin: 0 5px; '+ el.style +'"' + data + ' type = "' + el.type + '" id = "' + id + '" class = "' + el.class + '">' + el.text + '</button>';
+                    buttonsEl += '<button style="margin: 0 5px; ' + el.style + '"' + data + ' type = "' + el.type + '" id = "' + id + '" class = "' + el.class + '">' + el.text + '</button>';
                 });
             }
             bodyEl +=
@@ -388,14 +389,14 @@ uihelper = function () {
         if (!khusus.includes(el.type))
             return '<div class = "form-group">  <label class= "control-label' + el.labelClass + '" for = "' + id + '">' + el.label + '</label> <input name = "' + el.name + '" type = "' + el.type + '" id = "' + id + '" value = "' + el.value + '" class = "form-control ' + el.class + '"' + el.attr + ' placeholder = "' + placeholder + '"> </div>';
     }
-    this.notifikasi = function(pesan, opsi){
+    this.notifikasi = function (pesan, opsi) {
         this.generateModal('notif', 'body', {
             type: 'custom',
             open: true,
             destroy: true,
-            saatBuka: opsi.saatBuka == undefined ? function(){} : opsi.saatBuka, 
-            saatTutup: opsi.saatBuka == undefined ? function(){} : opsi.saatTutup, 
-            modalBody:{
+            saatBuka: opsi.saatBuka == undefined ? function () { } : opsi.saatBuka,
+            saatTutup: opsi.saatBuka == undefined ? function () { } : opsi.saatTutup,
+            modalBody: {
                 customBody: '<h4>' + pesan + '</h4>'
             }
         });
@@ -564,18 +565,18 @@ uihelper = function () {
                 })
             });
         }
-        
+
 
         $("#" + modalId).on('hidden.bs.modal', opt.saatTutup);
         $("#" + modalId).on('shown.bs.modal', opt.saatBuka);
-        
-        if(opt.modalclick){
-            $("#" + modalId).on('shown.bs.modal', function(){
-                setTimeout(function(){
+
+        if (opt.modalclick) {
+            $("#" + modalId).on('shown.bs.modal', function () {
+                setTimeout(function () {
                     this.addModalOpen();
                 }, 20)
             });
-            $("#" + modalId).on('hide.bs.modal', function(){
+            $("#" + modalId).on('hide.bs.modal', function () {
                 $('.modal').off('click', this.addModalOpen)
             });
         }
@@ -588,30 +589,29 @@ uihelper = function () {
             return kembalian;
 
     }
-    this.addModalOpen = function(langsung = false){
-        $('.modal').click(function(e){
-            setTimeout(function(){
+    this.addModalOpen = function (langsung = false) {
+        $('.modal').click(function (e) {
+            setTimeout(function () {
                 if (!$('body').hasClass('modal-open'))
                     $('body').addClass('modal-open');
             }, 10);
         });
 
-        if(langsung)
+        if (langsung)
             $('.modal').trigger('click');
     };
     this.initDatatable = function (el, opt) {
-
-        var table = $(el).DataTable({
-            searching: !opt.search ? false : opt.search,
-            lengthchange: !opt.change ? false : true,
-            lengthMenu: !opt.changeMenu ? false : true,
+        var options = {
+            searching: opt.search == undefined ? false : opt.search,
+            lengthchange: opt.change == undefined ? false : true,
+            lengthMenu: opt.changeMenu == undefined ? false : true,
             destroy: true,
-            info: !opt.info ? false : opt.info,
-            ordering: !opt.order ? false : opt.order,
-            dom: !opt.dom ? '<"row view-filter"<"col-sm-12"<"pull-left"l><"pull-right"f><"clearfix">>>t<"row view-pager"<"col-sm-12"<"text-center"ip>>>' : opt.dom,
-            buttons: !opt.buttons ? [] : opt.buttons,
+            info: opt.info == undefined ? false : opt.info,
+            ordering: opt.order == undefined ? false : opt.order,
+            dom: opt.dom == undefined ? '<"row view-filter"<"col-sm-12"<"pull-left"l><"pull-right"f><"clearfix">>>t<"row view-pager"<"col-sm-12"<"text-center"ip>>>' : opt.dom,
+            buttons: opt.buttons == undefined ? [] : opt.buttons,
             select: opt.select == undefined ? false : opt.select,
-            responsive: !opt.responsive ? false : opt.responsive,
+            responsive: opt.responsive == undefined ? false : opt.responsive,
             pageLength: 6,
             language: {
                 paginate: {
@@ -622,6 +622,7 @@ uihelper = function () {
             createdRow: function (row, data, index) {
                 if (opt.rowCallback) {
                     opt.rowCallback.forEach(rowc => {
+                        console.log(row);
                         if (rowc.filter)
                             $(row).on(rowc.evt, rowc.filter, { data: data }, rowc.func);
                         else
@@ -641,7 +642,9 @@ uihelper = function () {
 
                 $(".dataTables_wrapper .pagination").addClass("pagination-sm");
             }
-        });
+        };
+        console.log("OPT CDN", options);
+        var table = $(el).DataTable(options);
 
         if (opt.addCallback) {
             opt.callback.forEach(cb => {
@@ -651,6 +654,7 @@ uihelper = function () {
                     $(cb.el).on(cb.evt, { tabel: table }, cb.func);
             });
         }
+        this.instance.dataTables[el.replaceAll("#", '')] = table;
     }
     this.endLoading = function () {
         $('body').removeClass('show-spinner');
@@ -667,15 +671,15 @@ uihelper = function () {
                 url: opt.url,
                 thumbnailWidth: opt.thumbSize,
                 previewTemplate: '<div class="dz-preview dz-file-preview mb-3"><div class="d-flex flex-row "> <div class="p-0 w-30 position-relative"> <div class="dz-error-mark"><span><i class="simple-icon-exclamation"></i>  </span></div>      <div class="dz-success-mark"><span><i class="simple-icon-check-circle"></i></span></div>      <img data-dz-thumbnail class="img-thumbnail border-0" /> </div> <div class="pl-3 pt-2 pr-2 pb-1 w-70 dz-details position-relative"> <div> <span data-dz-name /> </div> <div class="text-primary text-extra-small" data-dz-size /> </div> <div class="dz-progress"><span class="dz-upload" data-dz-uploadprogress></span></div>        <div class="dz-error-message"><span data-dz-errormessage></span></div>            </div><a href="#" class="remove" data-dz-remove> <i class="simple-icon-trash"></i> </a></div>',
-                init: function(){
-                    if(opt.eventListener != 'undefined'){
+                init: function () {
+                    if (opt.eventListener != 'undefined') {
                         opt.eventListener.forEach(ev => {
                             this.on(ev.event, ev.func);
                         })
                     }
                 }
             }
-            var dropzone = $('#' + id).dropzone();            
+            var dropzone = $('#' + id).dropzone();
             setInstance('dropzone', id.replaceAll('-', '_'), dropzone);
         }
     }
@@ -909,5 +913,28 @@ uihelper = function () {
         }
     }
 
+    /* View in fullscreen */
+    this.openFullscreen = function () {
+        var elem = document.documentElement;
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) { /* Safari */
+            elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { /* IE11 */
+            elem.msRequestFullscreen();
+        }
+    }
+
+    /* Close fullscreen */
+    this.closeFullscreen = function () {
+        var elem = document.documentElement;
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) { /* Safari */
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE11 */
+            document.msExitFullscreen();
+        }
+    }
     return this;
 }();

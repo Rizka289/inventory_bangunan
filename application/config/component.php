@@ -36,6 +36,7 @@ $config['component']['dore']['sidebar'] = array(
                     array('text' => 'Barang Masuk', 'link' => base_url('report/masuk'), 'icon' => 'iconsmind-Inbox-Into'),
                     array('text' => 'Barang Keluar', 'link' => base_url('report/keluar'), 'icon' => 'iconsmind-Inbox-Out'),
                     array('text' => 'Pengambilan Barang', 'link' => base_url('report/pengambilan')),
+                    array('text' => 'Pengembalian Barang', 'link' => base_url('report/kembali')),
                 )
             ),
 

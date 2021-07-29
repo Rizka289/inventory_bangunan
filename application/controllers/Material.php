@@ -9,7 +9,8 @@ class Material extends CI_Controller
 		'navbar' => 'components/navbar/navbar_dore',
 		'sidebar' => 'components/sidebar/sidebar_dore',
 		'loadingAnim' => true,
-		'navbarConf' => array('adaSidebar' => true)
+		'navbarConf' => array('adaSidebar' => true),
+		'adaThemeSelector' => true,
 	);
 	public function __construct()
 	{

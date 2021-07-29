@@ -1279,7 +1279,7 @@ button {
   .navbar .navbar-logo .logo-mobile {
     width: 20px;
     height: 35px;
-    background: url("../img/logo-mobile.svg") no-repeat;
+    /* background: url("../img/logo-mobile.svg") no-repeat; */
     background-position: center center; }
   .navbar .search {
     position: relative;
