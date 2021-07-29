@@ -21,13 +21,10 @@ if (!isset($data_content))
         <div class="col-12">
             <h1><?php echo isset($pageName) ? $pageName : null ?></h1>
             <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
-                <?php if(isset($subPageName) && !is_array($subPageName)) $subPageName = array($subPageName); ?>
                 <ol class="breadcrumb pt-0">
-                    <?php foreach($subPageName as $s): ?>
-                        <li class="breadcrumb-item">
-                            <p><?php echo $s ?></p>
-                        </li>
-                    <?php endforeach ?>
+                    <li class="breadcrumb-item">
+                        <p><?php echo isset($subPageName) ? $subPageName : null ?></p>
+                    </li>
                 </ol>
             </nav>
             <?php if(isset($pageName)):?>
