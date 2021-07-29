@@ -11,7 +11,6 @@ async function tambahHandler(data, isEdit = false, defData = null, formBody = nu
     var form = "<?php echo $form ?>";
     var pasdata = <?php echo isset($formdata) && !empty($formdata) ? json_encode($formdata) : '{}' ?>;
     var formdata = new FormData();
-    console.log("FORM", formBody)
     var customBody = formBody != null;
     
     formdata.append('id', form);
@@ -213,6 +212,7 @@ async function persiapan_data() {
         var extra_buttons = <?php echo isset($extra_button) && !empty($extra_button) ? json_encode($extra_button) : '[]' ?>;
         var ada_hapus = <?php isset($ada_hapus) ? var_export($ada_hapus) : var_export(true) ?>;
         var ada_edit = <?php isset($ada_edit) ? var_export($ada_edit) : var_export(true) ?>;
+        var ada_tambah = <?php isset($ada_tambah) ? var_export($ada_tambah) : var_export(true) ?>;
         var index_id = <?php echo isset($index_id) ? $index_id : '0' ?>;
 
         var url = !url ? path + sumberData : url;
@@ -242,6 +242,12 @@ async function persiapan_data() {
             responsive: true,
             dom: 'Bfrtip',
             buttons: [
+                
+            ],
+        };  
+
+        if(ada_tambah){
+            options.buttons.push(
                 {
                     data: {modal_buka: modal_buka, tableid: tableid, toasCofig: toasCofig, loadData: loadData },
                     attr: { 'class': 'btn btn-primary' },
@@ -252,8 +258,8 @@ async function persiapan_data() {
                         $(node).prop('disabled', false);
                     }
                 },
-            ],
-        };
+            )
+        }
         
         if(adaCheckbox){
             options.select = {

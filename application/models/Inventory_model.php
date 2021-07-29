@@ -8,23 +8,23 @@ class Inventory_model extends CI_Model{
             $input = fieldmapping($post, 'inventory', ['tanggal' => waktu(null, MYSQL_DATE_FORMAT)]);
 			$barang = $this->db->where('id_nama_material', $input['id_nama_material'])
 				->where('id_merk_material', $input['id_merk_material'])
-				->where('id_uom', $input['id_uom'])->get('inventory_bangunan')->result();
+				->where('id_uom', $input['id_uom'])->get('inventory_bangunan')->row();
 
 			if(!empty($barang)){
-				$input['sebelumnya'] = $barang[0]->total;
-				$barang[0]->total = $input['jumlah'] + $barang[0]->total;
-				$input['total'] = $barang[0]->total;
-				$id = $barang[0]->id_inventory_bangunan;
-				unset($barang[0]->id_inventory_bangunan);
-				$average = ((($input['harga'] - $barang[0]->harga)/ ($barang[0]->jumlah + $input["jumlah"])) * $input['jumlah']) + $barang[0]->harga;
-				$barang[0]->harga = $average;
-				$barang[0]->jumlah += $input['jumlah'];
+				$input['sebelumnya'] = $barang->total;
+				$barang->total = $input['jumlah'] + $barang->total;
+				$input['total'] = $barang->total;
+				$id = $barang->id_inventory_bangunan;
+				unset($barang->id_inventory_bangunan);
+				$average = ((($input['harga'] - $barang->harga)/ ($barang->total + $input["jumlah"])) * $input['jumlah']) + $barang->harga;
+				$barang->harga = $average;
 				$this->db->where('id_inventory_bangunan', $id)->update('inventory_bangunan', $barang[0]);
 			}
 			else{
 				$input['total'] = $input['jumlah'];
 				$inventory = $input;
 				$input['sebelumnya'] = 0;
+				unset($inventory['keterangan'], $inventory['jumlah']);
 				$this->db->insert('inventory_bangunan', $inventory);
 			}
 			
@@ -174,6 +174,7 @@ class Inventory_model extends CI_Model{
     function pindahkan_ke_stok($post){
         $ids = $post['ids'];
 		$jumlah = $post['jumlah'];
+        $keterangan = $_POST['keterangan'];
 
 		$log = [];
 		$update = [];
@@ -202,7 +203,7 @@ class Inventory_model extends CI_Model{
 					'sebelumnya' => $jualan['total'],
 					'harga' => $jualan['harga'],
 					'total' => $jualan['total'] - $jumlah[$id],
-					'keterangan' => $jualan['keterangan'],
+					'keterangan' => $keterangan[$id],
 					'jenis' => 'pindah',
 					'tanggal'=> waktu(null, MYSQL_DATE_FORMAT)
 				);

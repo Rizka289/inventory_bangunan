@@ -23,15 +23,13 @@ class Inventory extends CI_Controller
 
 	public function index()
 	{
-
-
 		$data = $this->params + [
 			'resource' => array('main', 'dore', 'icons', 'form', 'datatables'),
 			'subPageName' => 'List',
 			'data_content' => array(
 				'dtid' => 'dt-inventory',
 				'dtTitle' => 'Daftar Barang di Gudang',
-				'head' => array('No','Id', 'Material','Merk','Satuan','Supplier','Harga','Total','Keterangan')
+				'head' => array('No','Id', 'Material','Merk','Satuan','Supplier','Harga','Total')
 			),
 			'content' => array('components/compui/datatables.responsive'),
 			'sidebarConf' => config_sidebar('admin', 1, 0)
@@ -60,7 +58,6 @@ class Inventory extends CI_Controller
 						'<td>' + d.nama + '</td>'+
 						'<td>' + 'Rp.' + d.harga.rupiahFormat() + '</td>'+
 						'<td>' + d.total + '</td>'+
-						'<td>' + d.keterangan + '</td>'+
 					'</tr>';
 			} ",
             'formdata' => array(
@@ -72,43 +69,7 @@ class Inventory extends CI_Controller
             'extra_button' => array(
                 array(
                     "text" => "Pindah Ke Stok",
-                    'funct' => "(e, dt, node, config) => {
-						$(node).prop('disabled', true);
-                            var data = instance.dataTables[config.data.tableid].rows({ selected: true }).data().toArray()
-                            if(data.length == 0){
-                                alert('Pilih Data yang ingin dipindahkan');
-                                $(node).prop('disabled', false);
-                                return;
-                            }
-                            var res = confirm('Yakin Ingin Memindahkan Data .?');
-                            if(!res){
-                                $(node).prop('disabled', false);
-                                return;
-                            }
-                            // $('#pros-loading').show();
-							$(node).prop('disabled', false);
-
-							var inputs = [];
-                            var barang = data.map(d => [d[index_id], d[2] + ' ' + d[3] + ', Satuan ' + d[4], d[7]]);
-							barang.forEach(b => {
-								inputs.push({
-									label: 'Jumlah untuk ' + b[1], type: 'text', id:'jumlah-' + b[0],  attr: 'min=1 max='+ b[2]+' required data-rule-number=true autocomplete=off', name: 'jumlah['+b[0]+']' 
-								});
-								inputs.push({
-									type: 'hidden', value: b[0], name: 'ids[]' 
-								});
-
-							})
-
-							var modalConf = {
-								pos: 'def', 
-								size: 'modal-md', 
-								submit: 'inventory/kestok',
-							};
-
-							tambahHandler(config.data, false, null, inputs, modalConf);
-							
-                    }"
+                    'funct' => load_script('utils/kestok', true)
                 )
 			),
 			'index_id' => 1,
@@ -119,7 +80,7 @@ class Inventory extends CI_Controller
 	}
 
 	function list(){
-        $res = $this->db->select('inventory_bangunan.id_inventory_bangunan, inventory_bangunan.jumlah, inventory_bangunan.harga, inventory_bangunan.total, inventory_bangunan.keterangan')
+        $res = $this->db->select('inventory_bangunan.id_inventory_bangunan,  inventory_bangunan.harga, inventory_bangunan.total')
             ->select('inventory_bangunan.tanggal, nama_material.nama_material, merk_material.merk_material, uom.uom, supplier.nama')
             ->from('inventory_bangunan')->join('merk_material', 'inventory_bangunan.id_merk_material = merk_material.id_merk_material')
             ->join('nama_material', 'nama_material.id_nama_material = inventory_bangunan.id_nama_material')
@@ -148,7 +109,7 @@ class Inventory extends CI_Controller
 			'subPageName' => 'Barang Masuk',
 			'data_content' => array(
 				'dtid' => 'dt-inventory',
-				'dtTitle' => 'Daftar Barang di Gudang',
+				'dtTitle' => 'Daftar Barang Masuk Gudang',
 				'head' => array(
 					'No',
 					'Id',

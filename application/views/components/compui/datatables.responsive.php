@@ -23,7 +23,7 @@
                         <thead>
                             <tr>
                                 <?php foreach ($head as $h) : ?>
-                                    <th><?php echo $h ?></th>
+                                    <th class="<?php echo isset($hide) && !empty($hide) && in_array($h, $hide) ? 'd-none' : null ?>"><?php echo $h ?></th>
                                 <?php endforeach ?>
                             </tr>
                         </thead>

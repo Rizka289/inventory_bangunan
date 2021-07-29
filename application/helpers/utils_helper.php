@@ -113,7 +113,11 @@ if (!method_exists($this, 'utils_config_item')) {
 }
 
 if (!method_exists($this, 'config_sidebar')) {
-    function config_sidebar($sidebar = null, int $activeMenu = 0, $subMenu = 0)
+    /**
+     * @return Array
+     * @param String $sidebar
+     */
+    function config_sidebar($sidebar = null, int $activeMenu = 0, int $subMenu = 0)
     {
 
         if (is_null($sidebar))
@@ -351,5 +355,28 @@ if (!method_exists($this, 'fieldmapping')) {
             }
         }
         return $field;
+    }
+
+    if(!method_exists($this, 'load_script')){
+        function load_script($script,$return =  false,  $data = []){
+            if(!file_exists(get_path('assets', 'js/' . $script . '.js')))
+                return
+            ob_start();
+            if(!empty($data)){
+                if(!is_array($data) && !is_object($data))
+                    $data = ['params' => $data];
+
+                extract($data);
+            }
+
+            include_once get_path('assets', 'js/' . $script . '.js');
+            $js = ob_get_contents();
+            ob_clean();
+
+            if($return)
+                return $js;
+            else
+                echo $js;
+        }
     }
 }
