@@ -32,17 +32,16 @@ if (!method_exists($this, 'upload_image')) {
                 $nama_image .= $format_file;
             } else
                 $nama_image =  $config['name'] . '.' . $format_file;
-            $tujuan  = get_path('static', $tujuan . '/'. $nama_image);
             try {
-                move_uploaded_file($tmp, $tujuan);
-
+                move_uploaded_file($tmp,  get_path('static', $tujuan . '/'. $nama_image));
+                if (isset($config['sebelum']) && !empty($config['sebelum'])) {
+                    unlink(get_path('static', $tujuan . '/' . $config['sebelum']));
+                }
             } catch (\Exception $err) {
-                response(['message' => 'Gagal upload file', 'err' => $err->getMessage()], 500);
+                return ['', false];
             }
-            if (isset($config['sebelum']) && !empty($config['sebelum'])) {
-                unlink($tujuan . '/' . $config['sebelum']);
-            }
-            return $nama_image;
+            
+            return [$nama_image, true];
         }
     }
 }

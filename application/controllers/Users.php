@@ -75,6 +75,27 @@ class Users extends CI_Controller
         $this->render();
     }
 
+    function akun (){
+        if(!is_login())
+            redirect(base_url());
+        $sidebarConf ['menus'][0]['active'] = true;
+        $data = $this->params + array(
+            'sidebarConf' => sessiondata('login', 'user_role') == 'admin' ? config_sidebar('admin', 4, 5) : config_sidebar('staff', 2, 0),
+            'content' => array('pages/users'),
+            'resource' => array('main', 'dore', 'form', 'icons'),
+            'subPageName' => 'Akun Saya'
+        );
+
+        
+        // $this->add_cachedJavascript('js/pages/laporan.js');
+        $this->add_cachedStylesheet('pages/profile');
+        $this->add_javascript(['src' => base_url('public/assets/vendor/lightbox/js/lightbox.min.js'), 'pos' => 'body:end', 'type' => 'file']);
+        $this->add_stylesheet(['src' => base_url('public/assets/vendor/lightbox/css/lightbox.min.css'), 'pos' => 'head', 'type' => 'file']);
+        $this->addViews('templates/backoffice_dore', $data);
+        $this->add_cachedJavascript('pages/profile');
+        $this->render();
+    }
+
     function list()
     {
         $res = $this->db->where("registrar != 'default'", null, false)->get('users')->result();
@@ -99,6 +120,40 @@ class Users extends CI_Controller
         //     response(['message' => "Gagal Mengirim Email", 'err' => $res['message']], 500);
 
         response("Berhasil, Mendaftarkan User Baru");
+    }
+
+    function update_profile(){
+        $input = fieldmapping($_POST, 'user', array('dibuat' => sessiondata('login', 'created_at')));
+        
+        if(isset($_FILES['pp']) && !empty($_FILES['pp'])){
+            $this->load->helper('upload');
+            $sebelumnya = sessiondata('login', 'user_avatar') == 'default.jpg' ? null : sessiondata('login', 'user_avatar');
+            $res = upload_image($_FILES['pp'], 'img/profile', ['sebelum' => $sebelumnya]);
+
+            if($res[1])
+                $input['user_avatar'] = $res[0];
+            else
+                $input['user_avatar'] = sessiondata('login', 'user_avatar');
+
+        }
+        else
+            $input['user_avatar'] = sessiondata('login', 'user_avatar');
+
+        if(isset($input['user_password']) && !empty($input['user_password']))
+            $input['user_password'] = password_hash($input['user_password'], PASSWORD_DEFAULT);
+
+        try {
+            $this->db->where('id_user', $_POST['id'])->update('users', $input);
+        } catch (\Throwable $th) {
+            response("Gagal, Terjadi kesalahan", 500);
+        }
+        if(isset($input['user_password']) && !empty($input['user_password']))
+            unset($input['password']);
+        
+        $input['id_user'] = sessiondata('login', 'id_user');
+        $this->session->set_userdata('login', $input);
+
+        response("Berhasil update profile");
     }
 
     function update()
