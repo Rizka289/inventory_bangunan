@@ -141,15 +141,18 @@ class Users extends CI_Controller
 
         if(isset($input['user_password']) && !empty($input['user_password']))
             $input['user_password'] = password_hash($input['user_password'], PASSWORD_DEFAULT);
+        else
+            unset($input['user_password']);
 
         try {
             $this->db->where('id_user', $_POST['id'])->update('users', $input);
         } catch (\Throwable $th) {
             response("Gagal, Terjadi kesalahan", 500);
         }
-        if(!isset($input['user_password']) || empty($input['user_password']))
-            unset($input['user_password']);
         
+        if(isset($input['user_password']))
+            unset($input['user_password']);
+            
         $input['id_user'] = sessiondata('login', 'id_user');
         $this->session->set_userdata('login', $input);
 
