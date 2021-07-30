@@ -147,8 +147,8 @@ class Users extends CI_Controller
         } catch (\Throwable $th) {
             response("Gagal, Terjadi kesalahan", 500);
         }
-        if(isset($input['user_password']) && !empty($input['user_password']))
-            unset($input['password']);
+        if(!isset($input['user_password']) || empty($input['user_password']))
+            unset($input['user_password']);
         
         $input['id_user'] = sessiondata('login', 'id_user');
         $this->session->set_userdata('login', $input);
