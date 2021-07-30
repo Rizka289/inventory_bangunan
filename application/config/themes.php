@@ -28,7 +28,7 @@ $config['themes']['icons']['css'] = array(
 
 // Dore themes
 $config['themes']['dore']['css'] = array(
-    array('pos' => 'head', 'src' => base_url('public/assets/vendor/dore/css/dore.light.green.css')),
+    // array('pos' => 'head', 'src' => base_url('public/assets/vendor/dore/css/dore.light.green.css')),
     array('pos' => 'head', 'src' => base_url('public/assets/vendor') . '/dore/css/main.css')
 );
 $config['themes']['dore']['js'] = array(
