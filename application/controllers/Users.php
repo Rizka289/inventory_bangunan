@@ -16,12 +16,13 @@ class Users extends CI_Controller
     {
         parent::__construct();
         $this->load->model('Satuan_model');
-        if (!is_login('admin'))
-            response("Tidak memiliki akses", 403);
+       
     }
 
     public function index()
     {
+        if (!is_login('admin'))
+            response("Tidak memiliki akses", 403);
 
         $data = $this->params + [
             'resource' => array('main', 'dore', 'icons', 'form', 'datatables'),
@@ -37,7 +38,8 @@ class Users extends CI_Controller
                     'Alamat',
                     'Role',
                     'Tgl Registrasi',
-                    'Registrar'
+                    'Registrar', 
+                    'Photo'
                 )
             ),
             'content' => array('components/compui/datatables.responsive'),
@@ -61,6 +63,7 @@ class Users extends CI_Controller
 						'<td>' + d.user_role.capitalize() + '</td>'+
 						'<td>' + d.created_at + '</td>'+
 						'<td>' + d.registrar + '</td>'+
+						'<td style=text-align:center> <img style=width:80px;height:auto; src=' + path + 'public/img/profile/' + d.user_avatar + '></td>'+
 					'</tr>';
 			} ",
             'editCallback' => "(data) => {
@@ -152,7 +155,7 @@ class Users extends CI_Controller
         
         if(isset($input['user_password']))
             unset($input['user_password']);
-            
+
         $input['id_user'] = sessiondata('login', 'id_user');
         $this->session->set_userdata('login', $input);
 
@@ -163,6 +166,7 @@ class Users extends CI_Controller
     {
         if (!httpmethod())
             response("Metode Akses Ilegal", 403);
+
         $data = fieldmapping($_POST, 'user');
         try {
             $this->db->where('id_user', $_POST['id'])

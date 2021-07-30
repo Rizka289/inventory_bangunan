@@ -1,4 +1,11 @@
 <div class="form-group">
+    <label for="username">Role</label>
+    <select class="form-control" name="role" id="role">
+        <option value="admin">Admin</option>
+        <option value="staff">Staff</option>
+    </select>
+</div>
+<div class="form-group">
     <label for="username">Nama Lengkap</label>
     <input class="form-control" type="text" required id="username" name="username">
 </div>

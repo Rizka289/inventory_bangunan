@@ -19,12 +19,13 @@ class Report extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->model('Satuan_model');
-		if(!is_login('admin'))
-			response("Tidak memiliki akses", 403);
+		
 
 	}
 
     function masuk(){
+        if(!is_login())
+			response("Tidak memiliki akses", 403);
         $data = $this->params + [
             'resource' => array('main', 'dore', 'icons', 'form', 'datatables'),
             'subPageName' => 'Barang Masuk',
@@ -35,7 +36,7 @@ class Report extends CI_Controller
                 'head' => array('No', 'Tanggal', 'Id Barang', 'Material', 'Merk', 'Satuan', 'Supplier','Harga', 'Jumlah', 'Sebelumnya', 'Total Stok')
             ),
             'content' => array('components/compui/datatables.responsive'),
-            'sidebarConf' => config_sidebar(sessiondata('login', 'user_role'), 3, 0)
+            'sidebarConf' => is_login('admin') ? config_sidebar('admin', 3, 0) : config_sidebar('staff', 1, 0)
         ];
 
         $tanggal = $this->db->select("MAX(tanggal) max, MIN(tanggal) min")
@@ -90,6 +91,8 @@ class Report extends CI_Controller
 
     }
     function keluar(){
+        if(!is_login())
+			response("Tidak memiliki akses", 403);
         $data = $this->params + [
             'resource' => array('main', 'dore', 'icons', 'form', 'datatables'),
             'subPageName' => 'Barang Keluar',
@@ -100,7 +103,7 @@ class Report extends CI_Controller
                 'head' => array('No', 'Tangal', 'Id Barang', 'Material', 'Merk', 'Satuan', 'Supplier','Harga', 'Jumlah', 'Sebelumnya', 'Total Stok')
             ),
             'content' => array('components/compui/datatables.responsive'),
-            'sidebarConf' => config_sidebar(sessiondata('login', 'user_role'), 3, 1)
+            'sidebarConf' => is_login('admin') ? config_sidebar('admin', 3, 1) : config_sidebar('staff', 1, 1)
         ];
 
         $tanggal = $this->db->select("MAX(tanggal) max, MIN(tanggal) min")
@@ -155,6 +158,8 @@ class Report extends CI_Controller
     }
 
     function pengambilan(){
+        if(!is_login('admin'))
+			response("Tidak memiliki akses", 403);
         $data = $this->params + [
             'resource' => array('main', 'dore', 'icons', 'form', 'datatables'),
             'subPageName' => 'Barang Dipindah dari Gudang',
@@ -220,6 +225,8 @@ class Report extends CI_Controller
     }
 
     function kembali(){
+        if(!is_login('admin'))
+			response("Tidak memiliki akses", 403);
         $data = $this->params + [
             'resource' => array('main', 'dore', 'icons', 'form', 'datatables'),
             'subPageName' => 'Barang Dikembalikan ke Gudang',

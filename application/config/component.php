@@ -48,6 +48,7 @@ $config['component']['dore']['sidebar'] = array(
             array('text' => 'Laporan', 'link' =>  '#laporan', 'icon' => 'iconsmind-File-Share'),
             array('text' => 'Utilitas', 'link' => '#util', 'icon' => 'simple-icon-equalizer'),
         ),
+       'subMenus' => array(
         array(
             'induk' => 'laporan',
             'menus' => array(
@@ -62,6 +63,7 @@ $config['component']['dore']['sidebar'] = array(
                 array('text' => 'Akun Saya', 'link' => base_url('users/akun'), 'icon' => 'simple-icon-user'),
             )
         ),
+       )
 
     )
 
