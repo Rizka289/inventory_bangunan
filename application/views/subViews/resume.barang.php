@@ -21,7 +21,7 @@
     <div class="col-md-3 col-sm-10">
         <div class="card">
             <div class="card-body text-center">
-                <i style="font-size: 50px;" class="iconsmind-Inbox-Out"></i>
+                <i style="font-size: 50px;" class="iconsmind-Warehouse"></i>
                 <p class="card-text mb-0">Barang Digudang</p>
                 <p class="lead text-center"><?= $gudang ?></p>
             </div>
@@ -30,7 +30,7 @@
     <div class="col-md-3 col-sm-10">
         <div class="card">
             <div class="card-body text-center">
-                <i style="font-size: 50px;" class="iconsmind-Inbox-Out"></i>
+                <i style="font-size: 50px;" class="iconsmind-Shop"></i>
                 <p class="card-text mb-0">Barang Ditoko</p>
                 <p class="lead text-center"><?= $toko ?></p>
             </div>
